@@ -34,7 +34,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
         </div>
 
         <div class="narrative-content">
-          @for (block of lesson()!.narrative; track $index) {
+          @for (block of lesson()!.narrative; track block.type + $index) {
             @switch (block.type) {
               @case ('text') {
                 <p class="narrative-text" [innerHTML]="renderText(block.content)"></p>
@@ -81,7 +81,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
                   </div>
                   <p class="checkpoint-question">{{ block.question }}</p>
                   <div class="checkpoint-options">
-                    @for (option of block.options; track $index) {
+                    @for (option of block.options; track option) {
                       <button
                         class="checkpoint-option"
                         [class.correct]="checkpointSelected() === $index && $index === block.correct"
@@ -180,7 +180,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       font-weight: 700;
       color: var(--accent-primary);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: var(--letter-wide);
     }
 
     .time-tag {
@@ -211,11 +211,11 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       align-items: center;
       font-size: 0.75rem;
       font-weight: 600;
-      color: #fbbf24;
+      color: var(--accent-xp);
       background: rgba(251, 191, 36, 0.1);
       border: 1px solid rgba(251, 191, 36, 0.2);
       padding: 0.25rem 0.625rem;
-      border-radius: 999px;
+      border-radius: var(--radius-full);
     }
 
     .narrative-content {
@@ -244,24 +244,24 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       align-items: flex-start;
       gap: 0.875rem;
       padding: 0.875rem 1rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       border-left: 3px solid;
 
       &[data-variant="info"] {
-        background: rgba(6, 182, 212, 0.08);
-        border-color: var(--accent-cyan);
+        background: var(--color-info-bg);
+        border-color: var(--color-info-border);
       }
       &[data-variant="warning"] {
-        background: rgba(245, 158, 11, 0.08);
-        border-color: #f59e0b;
+        background: var(--color-warning-bg);
+        border-color: var(--color-warning-border);
       }
       &[data-variant="success"] {
-        background: rgba(16, 185, 129, 0.08);
-        border-color: var(--accent-code);
+        background: var(--color-success-bg);
+        border-color: var(--color-success-border);
       }
       &[data-variant="angular"] {
-        background: rgba(221, 0, 49, 0.08);
-        border-color: var(--accent-angular);
+        background: var(--color-angular-bg);
+        border-color: var(--color-angular-border);
       }
     }
 
@@ -274,7 +274,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       grid-template-columns: 1fr auto 1fr;
       gap: 0;
       border: 1px solid var(--border-subtle);
-      border-radius: 10px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
     }
 
@@ -294,7 +294,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       font-size: 0.6875rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: var(--letter-normal);
       color: var(--accent-primary);
       margin-bottom: 0.5rem;
     }
@@ -304,10 +304,25 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       background: var(--border-subtle);
     }
 
+    @media (max-width: 768px) {
+      .comparison-block {
+        grid-template-columns: 1fr;
+
+        .comparison-side + .comparison-side {
+          border-top: 1px solid var(--border-subtle);
+          border-left: none;
+        }
+      }
+
+      .comparison-divider {
+        display: none;
+      }
+    }
+
     // Code blocks
     .code-block {
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       overflow: hidden;
     }
 
@@ -341,7 +356,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
     .checkpoint-block {
       background: var(--bg-elevated);
       border: 1px solid rgba(124, 58, 237, 0.2);
-      border-radius: 10px;
+      border-radius: var(--radius-lg);
       padding: 1.25rem;
     }
 
@@ -356,7 +371,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       font-size: 0.6875rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: var(--letter-wide);
       color: var(--accent-primary);
     }
 
@@ -380,7 +395,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       padding: 0.625rem 0.875rem;
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       cursor: pointer;
       text-align: left;
       color: var(--text-secondary);
@@ -419,7 +434,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       margin-top: 1rem;
       padding: 0.75rem;
       background: rgba(16, 185, 129, 0.08);
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       font-size: 0.875rem;
 
       strong { color: var(--accent-code); display: block; margin-bottom: 0.375rem; }
@@ -427,10 +442,9 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
     }
 
     // Diagram
-    .diagram-block { }
     .diagram-placeholder {
       border: 1px dashed var(--border-subtle);
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       overflow: hidden;
       background: var(--bg-elevated);
     }
@@ -459,7 +473,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       background: var(--accent-primary);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
@@ -480,7 +494,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       padding: 0.75rem;
       background: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       color: #6ee7b7;
       font-weight: 600;
       font-size: 0.9375rem;
@@ -492,7 +506,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
       background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
       color: var(--text-secondary);
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;

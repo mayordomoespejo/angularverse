@@ -94,9 +94,9 @@ import { DomSanitizer } from '@angular/platform-browser';
       height: 10px;
       border-radius: 50%;
 
-      &.red    { background: #ef4444; opacity: 0.6; }
-      &.yellow { background: #f59e0b; opacity: 0.6; }
-      &.green  { background: #10b981; opacity: 0.6; }
+      &.red    { background: var(--accent-error);   opacity: 0.6; }
+      &.yellow { background: var(--accent-warning); opacity: 0.6; }
+      &.green  { background: var(--accent-success); opacity: 0.6; }
     }
 
     .preview-content {
@@ -104,7 +104,7 @@ import { DomSanitizer } from '@angular/platform-browser';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1.5rem;
       overflow: hidden;
 
       &.has-preview {
@@ -153,7 +153,7 @@ import { DomSanitizer } from '@angular/platform-browser';
       display: inline-block;
       background: var(--bg-elevated);
       border: 1px solid var(--border-subtle);
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
       padding: 0.1em 0.4em;
       font-family: var(--font-mono);
       font-size: 0.875em;

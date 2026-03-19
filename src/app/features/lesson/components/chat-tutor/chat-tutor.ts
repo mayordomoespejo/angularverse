@@ -1,9 +1,9 @@
 import {
-  AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
+  SecurityContext,
   ViewChild,
   computed,
   effect,
@@ -12,6 +12,8 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 import { AiTutorService } from '../../../../core/services/ai-tutor.service';
 import { LessonProgressService } from '../../../../core/services/lesson-progress.service';
 import type { ChatMessage } from '../../../../core/models/chat-message.model';
@@ -169,7 +171,7 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
       flex-shrink: 0;
       user-select: none;
 
-      &:hover { background: color-mix(in srgb, #1F2937 95%, white 5%); }
+      &:hover { background: color-mix(in srgb, var(--bg-elevated) 95%, white 5%); }
     }
 
     .chat-bar-left {
@@ -242,7 +244,7 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
       color: var(--text-muted);
       cursor: pointer;
       padding: 0.25rem;
-      border-radius: 4px;
+      border-radius: var(--radius-sm, 4px);
       transition: all 150ms ease;
       flex-shrink: 0;
 
@@ -303,7 +305,7 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
         .msg-bubble {
           background: rgba(124, 58, 237, 0.15);
           border: 1px solid rgba(124, 58, 237, 0.2);
-          border-bottom-right-radius: 4px;
+          border-bottom-right-radius: var(--radius-sm, 4px);
         }
       }
 
@@ -311,7 +313,7 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
         .msg-bubble {
           background: var(--bg-surface);
           border: 1px solid var(--border-subtle);
-          border-bottom-left-radius: 4px;
+          border-bottom-left-radius: var(--radius-sm, 4px);
         }
       }
     }
@@ -495,14 +497,38 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    // Responsive — mobile
+    @media (max-width: 768px) {
+      .messages-panel {
+        height: calc(50vh - 104px);
+        max-height: 360px;
+      }
+
+      .chat-bar-chips {
+        gap: 0.375rem;
+
+        .chip {
+          font-size: 0.6875rem;
+          padding: 0.25rem 0.625rem;
+        }
+      }
+
+      .msg-bubble {
+        max-width: 90%;
+      }
+    }
   `],
 })
-export class ChatTutorComponent implements AfterViewChecked {
+export class ChatTutorComponent {
   @ViewChild('messagesContainer') private messagesContainer?: ElementRef<HTMLDivElement>;
 
   private readonly aiTutor = inject(AiTutorService);
   private readonly progressService = inject(LessonProgressService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly sanitizer = inject(DomSanitizer);
+
+  private streamSub: Subscription | null = null;
 
   readonly lesson = input<Lesson | null>(null);
   readonly currentCode = input('');
@@ -519,8 +545,6 @@ export class ChatTutorComponent implements AfterViewChecked {
   readonly lessonTitle = computed(() => this.lesson()?.title ?? 'Angular');
   readonly suggestedQuestions = computed(() => this.lesson()?.suggestedQuestions?.slice(0, 3) ?? []);
   readonly canSend = computed(() => this.inputValue().trim().length > 0 && !this.isStreaming());
-
-  private shouldScrollToBottom = false;
 
   constructor() {
     // Cuando cambia la lección, cargar historial o mostrar intro fijo
@@ -546,13 +570,10 @@ export class ChatTutorComponent implements AfterViewChecked {
         this.messages.set([]);
       }
     });
-  }
 
-  ngAfterViewChecked(): void {
-    if (this.shouldScrollToBottom) {
-      this.scrollToBottom();
-      this.shouldScrollToBottom = false;
-    }
+    this.destroyRef.onDestroy(() => {
+      this.streamSub?.unsubscribe();
+    });
   }
 
   prefillInput(text: string): void {
@@ -583,7 +604,7 @@ export class ChatTutorComponent implements AfterViewChecked {
     this.messages.update(msgs => [...msgs, userMsg]);
     this.isStreaming.set(true);
     this.streamingContent.set('');
-    this.shouldScrollToBottom = true;
+    setTimeout(() => this.scrollToBottom(), 0);
 
     const assistantId = crypto.randomUUID();
     let accumulatedContent = '';
@@ -600,7 +621,8 @@ export class ChatTutorComponent implements AfterViewChecked {
       aiContext: lesson?.aiContext ?? '',
     };
 
-    const sub = this.aiTutor.streamResponse(userContent, context).subscribe({
+    this.streamSub?.unsubscribe();
+    this.streamSub = this.aiTutor.streamResponse(userContent, context).subscribe({
       next: (token: string) => {
         accumulatedContent += token;
         this.streamingContent.set(accumulatedContent);
@@ -627,7 +649,7 @@ export class ChatTutorComponent implements AfterViewChecked {
           }
         });
 
-        this.shouldScrollToBottom = true;
+        setTimeout(() => this.scrollToBottom(), 0);
       },
       error: (err: unknown) => {
         const errorMsg = err instanceof Error ? err.message : 'Error de conexión con Ngbot';
@@ -642,7 +664,7 @@ export class ChatTutorComponent implements AfterViewChecked {
           },
         ]);
         this.isStreaming.set(false);
-        this.shouldScrollToBottom = true;
+        setTimeout(() => this.scrollToBottom(), 0);
       },
       complete: () => {
         this.messages.update(msgs =>
@@ -652,15 +674,13 @@ export class ChatTutorComponent implements AfterViewChecked {
         );
         this.isStreaming.set(false);
         this.streamingContent.set('');
-        this.shouldScrollToBottom = true;
+        setTimeout(() => this.scrollToBottom(), 0);
 
         if (lesson) {
           this.progressService.saveChatHistory(lesson.id, this.messages());
         }
       },
     });
-
-    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
   getInputValue(event: Event): string {
@@ -668,7 +688,7 @@ export class ChatTutorComponent implements AfterViewChecked {
   }
 
   renderMarkdown(content: string): string {
-    return content
+    const html = content
       .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -676,6 +696,7 @@ export class ChatTutorComponent implements AfterViewChecked {
       .replace(/\n\n/g, '</p><p>')
       .replace(/^/, '<p>')
       .replace(/$/, '</p>');
+    return this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '';
   }
 
   private scrollToBottom(): void {

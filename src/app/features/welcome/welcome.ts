@@ -33,16 +33,12 @@ type Act = 0 | 1 | 2 | 3;
         @if (currentAct() <= 1) {
           <div class="act act-intro" [class.visible]="currentAct() === 0">
             <div class="angular-logo-nebula" aria-hidden="true">
-              <svg viewBox="0 0 250 250" class="logo-svg">
-                <defs>
-                  <linearGradient id="angularGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#DD0031"/>
-                    <stop offset="100%" stop-color="#7C3AED"/>
-                  </linearGradient>
-                </defs>
-                <polygon points="125,5 250,46 210,214 125,245 40,214 0,46" fill="url(#angularGrad)" opacity="0.15"/>
-                <path d="M125 30 L196 53 L171 175 L125 195 L79 175 L54 53 Z" fill="none" stroke="url(#angularGrad)" stroke-width="3" class="shield-path"/>
-                <path d="M85 155 L108 95 L125 145 L142 95 L165 155 M95 135 L155 135" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <svg viewBox="0 0 60 60" fill="none" class="logo-svg">
+                <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2" class="hex-path"/>
+                <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
+                <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="34" r="2" fill="#7C3AED"/>
+                <circle cx="36" cy="34" r="2" fill="#7C3AED"/>
               </svg>
             </div>
             <p class="typewriter-text">{{ typedText() }}<span class="cursor">|</span></p>
@@ -57,11 +53,11 @@ type Act = 0 | 1 | 2 | 3;
                 <span class="angular-badge">ng</span>
                 <span class="brand-word">AngularVerse</span>
               </h1>
-              <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código real. Con un tutor que te entiende.</p>
+              <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código en contexto. Con un tutor que te entiende.</p>
               <div class="feature-pills">
                 <span class="pill">⚡ Angular 19 Signals</span>
                 <span class="pill">🤖 AI Tutor Ngbot</span>
-                <span class="pill">💻 Editor en vivo</span>
+                <span class="pill">💻 Código en contexto</span>
                 <span class="pill">🏆 Sistema de XP</span>
               </div>
             </div>
@@ -225,10 +221,10 @@ type Act = 0 | 1 | 2 | 3;
       width: 200px;
       height: 200px;
 
-      .shield-path {
-        stroke-dasharray: 600;
-        stroke-dashoffset: 600;
-        animation: draw 2s ease forwards 0.5s;
+      .hex-path {
+        stroke-dasharray: 200;
+        stroke-dashoffset: 200;
+        animation: draw 1.5s ease forwards 0.5s;
       }
     }
 
@@ -270,9 +266,10 @@ type Act = 0 | 1 | 2 | 3;
     }
 
     .brand-title {
-      font-family: var(--font-display);
+      font-family: var(--font-body);
       font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 900;
+      font-weight: 800;
+      letter-spacing: -0.03em;
       color: var(--text-primary);
       display: flex;
       align-items: center;

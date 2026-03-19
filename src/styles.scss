@@ -1,0 +1,144 @@
+@use 'styles/variables';
+@use 'styles/typography';
+@use 'styles/animations';
+
+// Box-sizing reset
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100%;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background-color: var(--border); border-radius: var(--radius-full); }
+}
+
+img, svg { display: block; max-width: 100%; }
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+}
+
+input, textarea, select { font-family: var(--font-body); }
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+// ── Utility classes ──────────────────────────────────────────
+
+.glow-text {
+  text-shadow: 0 0 20px var(--glow), 0 0 40px var(--glow);
+}
+
+.glow-border {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 10px var(--glow), inset 0 0 10px var(--glow);
+}
+
+.glass-card {
+  background: rgba(22, 27, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.surface-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.elevated-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+// ── Buttons ───────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  &--primary {
+    background: var(--accent-primary);
+    color: white;
+    &:hover:not(:disabled) { background: #7C3AED; box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border);
+    &:hover:not(:disabled) { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--border-subtle); }
+  }
+
+  &--angular {
+    background: var(--accent-angular);
+    color: white;
+    &:hover:not(:disabled) { background: #b91c1c; box-shadow: var(--shadow-glow-angular); transform: translateY(-1px); }
+  }
+
+  &--sm { padding: var(--space-2) var(--space-4); font-size: 0.8125rem; }
+}
+
+// ── Badges ────────────────────────────────────────────────────
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  &--primary { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
+  &--angular  { background: rgba(221, 0, 49, 0.12);  color: #fca5a5; border: 1px solid rgba(221, 0, 49, 0.25); }
+  &--code     { background: rgba(52, 211, 153, 0.12); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.25); }
+}
+
+// ── Scrollbar utility ─────────────────────────────────────────
+
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background-color: var(--border); border-radius: var(--radius-full); }
+}

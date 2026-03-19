@@ -1,0 +1,65 @@
+:root {
+  /* Backgrounds — jerarquía clara y diferenciable */
+  --bg-base: #0D1117;
+  --bg-surface: #161B22;
+  --bg-elevated: #21262D;
+
+  /* Accents */
+  --accent-primary: #8B5CF6;
+  --accent-angular: #DD0031;
+  --accent-code: #34D399;
+  --accent-cyan: #22D3EE;
+
+  /* Text — contraste WCAG AA+ */
+  --text-primary: #F0F6FC;
+  --text-secondary: #C9D1D9;
+  --text-muted: #8B949E;
+
+  /* Borders — visibles, no invisibles */
+  --border: #30363D;
+  --border-subtle: #21262D;
+
+  /* Glows — más pronunciados */
+  --glow: rgba(139, 92, 246, 0.25);
+  --glow-angular: rgba(221, 0, 49, 0.2);
+
+  // Spacing scale
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  // Border radius
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px var(--glow), 0 0 40px var(--glow);
+  --shadow-glow-angular: 0 0 20px var(--glow-angular);
+
+  // Transitions
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  // Z-index scale
+  --z-base: 0;
+  --z-raised: 10;
+  --z-overlay: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+}

@@ -37,8 +37,8 @@ type Act = 0 | 1 | 2 | 3;
                 <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2" class="hex-path"/>
                 <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
                 <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="24" cy="34" r="2" fill="#7C3AED"/>
-                <circle cx="36" cy="34" r="2" fill="#7C3AED"/>
+                <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
+                <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
               </svg>
             </div>
             <p class="typewriter-text">{{ typedText() }}<span class="cursor">|</span></p>
@@ -49,6 +49,15 @@ type Act = 0 | 1 | 2 | 3;
         @if (currentAct() === 2) {
           <div class="act act-reveal">
             <div class="brand-lockup">
+              <div class="brand-ngbot-icon" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 60 60" fill="none">
+                  <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2"/>
+                  <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
+                  <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
+                  <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
+                </svg>
+              </div>
               <h1 class="brand-title">
                 <span class="angular-badge">ng</span>
                 <span class="brand-word">AngularVerse</span>
@@ -256,6 +265,26 @@ type Act = 0 | 1 | 2 | 3;
       50% { opacity: 0; }
     }
 
+    @keyframes eyeBlink {
+      0%, 88%, 100% { transform: scaleY(1); opacity: 1; }
+      93% { transform: scaleY(0.15); opacity: 0.8; }
+    }
+
+    @keyframes eyeGlow {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; filter: drop-shadow(0 0 2px #7C3AED); }
+    }
+
+    .bot-eye {
+      animation: eyeBlink 4s ease-in-out infinite, eyeGlow 2s ease-in-out infinite;
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+
+    .bot-eye:last-child {
+      animation-delay: 0.07s, 0.5s;
+    }
+
     // Act 2
     .act-reveal {
       text-align: center;
@@ -263,6 +292,13 @@ type Act = 0 | 1 | 2 | 3;
 
     .brand-lockup {
       margin-bottom: 2rem;
+    }
+
+    .brand-ngbot-icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+      animation: breathing 3s ease-in-out infinite;
     }
 
     .brand-title {

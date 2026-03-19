@@ -1,74 +1,77 @@
 # AngularVerse
 
-Plataforma interactiva para aprender Angular con un tutor AI, editor en vivo y lecciones progresivas.
+An interactive Angular 19 learning platform with a read-only code viewer, an AI tutor (Ngbot), and structured lesson panels. Covers 52 lessons across 10 modules from Angular fundamentals through SSR and production.
 
-## Stack
+## Features
 
-- **Angular 19** — Standalone components, Signals, OnPush, new control flow
-- **Supabase** — Progreso del usuario persistente (anon device_id pattern)
-- **OpenRouter** — AI tutor (Ngbot) con contexto de la lección actual
-- **JetBrains Mono / Inter** — Tipografía
+- Read-only code viewer — observe real Angular code per lesson without editing
+- AI tutor sidebar (Ngbot) powered by OpenRouter for contextual Q&A
+- Lesson explain panel with narrative blocks: text, tips, warnings, and checkpoints
+- Iframe-based preview panel showing what each Angular concept renders
+- Lesson timeline bar tracking progress across modules
+- XP and streak tracking persisted in Supabase via anonymous device_id pattern
+- Three view modes: default (3 panels), lesson fullscreen, code fullscreen (zen mode)
+- Keyboard shortcut `Ctrl+Shift+Z` to toggle zen mode
 
-## Setup
+## Tech stack
 
-```bash
-# 1. Clona el repo
-git clone https://github.com/TU_USUARIO/angularverse.git
-cd angularverse
+| Layer | Library |
+|---|---|
+| Framework | Angular 19 |
+| State | Signals (`signal`, `computed`, `effect`) |
+| Change detection | OnPush + Zoneless-ready |
+| AI tutor | OpenRouter API |
+| Persistence | Supabase (anon device_id, RLS) |
+| Routing | Angular Router (standalone, lazy) |
+| Styling | Angular component styles (CSS nesting) |
+| Fonts | Inter, JetBrains Mono |
+| Build | Angular CLI 19 |
 
-# 2. Instala dependencias
-npm install --legacy-peer-deps
+## Getting started
 
-# 3. Configura las variables de entorno
-cp src/environments/environment.example.ts src/environments/environment.ts
-# Edita environment.ts con tus credenciales
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+3. Copy the environment template and fill in your credentials:
+   ```bash
+   cp src/environments/environment.example.ts src/environments/environment.ts
+   ```
+4. Start the dev server:
+   ```bash
+   npm start
+   ```
 
-# 4. Arranca el servidor de desarrollo
-npm start
-```
+## Environment variables
 
-## Variables de entorno
+Set these in `src/environments/environment.ts`:
 
-Copia `src/environments/environment.example.ts` a `src/environments/environment.ts` y rellena:
-
-| Variable | Descripción |
+| Variable | Description |
 |----------|-------------|
-| `openRouterApiKey` | API key de [OpenRouter](https://openrouter.ai) |
-| `supabaseUrl` | URL de tu proyecto Supabase |
-| `supabaseAnonKey` | Anon key de Supabase (Settings → API) |
-
-## Estructura
-
-```
-src/app/
-├── core/
-│   ├── models/          # Interfaces TypeScript
-│   └── services/        # LessonProgressService, SupabaseService, ChatService
-├── data/lessons/        # Contenido del curriculum (M0–M10)
-├── features/
-│   ├── lesson/          # Shell + paneles (explain, code, preview, chat)
-│   ├── timeline/        # Barra de progreso superior
-│   └── welcome/         # Página de inicio
-└── shared/
-    └── components/      # ProgressNodeComponent, etc.
-```
+| `openRouterApiKey` | API key from openrouter.ai |
+| `supabaseUrl` | Supabase project URL |
+| `supabaseAnonKey` | Supabase anon key (Settings → API) |
 
 ## Curriculum
 
-| Módulo | Tema | Lecciones |
-|--------|------|-----------|
+| Module | Topic | Lessons |
+|--------|-------|---------|
 | M0 | Onboarding | 3 |
-| M1 | Fundamentos | 5 |
-| M2 | Componentes y Signals | 6 |
-| M3 | Templates y Directivas | 4 |
-| M4 | Servicios e Inyección de Dependencias | 6 |
-| M5 | Routing y Navegación | 6 |
-| M6 | Formularios | 5 |
-| M7 | HTTP y RxJS | 5 |
-| M8 | Estado Global con Signals | 4 |
+| M1 | Fundamentals | 5 |
+| M2 | Components & Signals | 6 |
+| M3 | Templates & Directives | 4 |
+| M4 | Services & Dependency Injection | 6 |
+| M5 | Routing & Navigation | 6 |
+| M6 | Forms | 5 |
+| M7 | HTTP & RxJS | 5 |
+| M8 | Global State with Signals | 4 |
 | M9 | Testing | 4 |
-| M10 | SSR, Performance y Producción | 4 |
+| M10 | SSR, Performance & Production | 4 |
 
-## License
+## Scripts
 
-MIT
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start dev server |
+| `npm run build` | Production build |

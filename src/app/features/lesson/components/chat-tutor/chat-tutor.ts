@@ -29,16 +29,14 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
       <!-- Chat bar (always visible) -->
       <div class="chat-bar" (click)="toggle.emit()">
         <div class="chat-bar-left">
-          <app-ngbot-avatar size="sm" [showStatus]="true" />
+          <app-ngbot-avatar size="sm" [showStatus]="true" [eyeMove]="true" />
           <div class="ngbot-info">
             <span class="ngbot-name">Ngbot</span>
-            <span class="ngbot-status">
-              @if (isStreaming()) {
+            @if (isStreaming()) {
+              <span class="ngbot-status">
                 <span class="streaming-indicator">escribiendo...</span>
-              } @else {
-                <span class="online-indicator">● en línea</span>
-              }
-            </span>
+              </span>
+            }
           </div>
         </div>
 
@@ -297,10 +295,12 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
     .message {
       display: flex;
       gap: 0.625rem;
-      align-items: flex-start;
+      align-items: flex-end;
 
       &.user {
-        flex-direction: row-reverse;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: flex-end;
 
         .msg-bubble {
           background: rgba(124, 58, 237, 0.15);
@@ -310,6 +310,8 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
       }
 
       &.assistant {
+        flex-direction: row;
+
         .msg-bubble {
           background: var(--bg-surface);
           border: 1px solid var(--border-subtle);
@@ -349,6 +351,8 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
 
     .msg-avatar {
       flex-shrink: 0;
+      display: flex;
+      align-items: flex-end;
     }
 
     .msg-user-avatar {
@@ -658,7 +662,7 @@ export class ChatTutorComponent {
           {
             id: assistantId,
             role: 'assistant' as const,
-            content: `Lo siento, tuve un problema al conectarme: ${errorMsg}. Verifica tu API key en environment.ts.`,
+            content: `Lo siento, tuve un problema al conectarme: ${errorMsg}. Intenta de nuevo en unos segundos o recarga la página.`,
             timestamp: new Date(),
             isStreaming: false,
           },

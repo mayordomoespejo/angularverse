@@ -34,7 +34,7 @@ type Act = 0 | 1 | 2 | 3;
           <div class="act act-intro" [class.visible]="currentAct() === 0">
             <div class="angular-logo-nebula" aria-hidden="true">
               <svg viewBox="0 0 60 60" fill="none" class="logo-svg">
-                <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2" class="hex-path"/>
+                <path d="M30,2 L54,16 L54,44 L30,58 L6,44 L6,16 Z" fill="#1F2937" stroke="#7C3AED" stroke-width="2" class="hex-path"/>
                 <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
                 <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
@@ -59,14 +59,12 @@ type Act = 0 | 1 | 2 | 3;
                 </svg>
               </div>
               <h1 class="brand-title">
-                <span class="angular-badge">ng</span>
                 <span class="brand-word">AngularVerse</span>
               </h1>
               <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código en contexto. Con un tutor que te entiende.</p>
               <div class="feature-pills">
-                <span class="pill">⚡ Angular 19 Signals</span>
                 <span class="pill">🤖 AI Tutor Ngbot</span>
-                <span class="pill">💻 Código en contexto</span>
+                <span class="pill">🚀 De cero a producción</span>
                 <span class="pill">🏆 Sistema de XP</span>
               </div>
             </div>
@@ -112,6 +110,7 @@ type Act = 0 | 1 | 2 | 3;
                   </button>
                 }
               </div>
+              <p class="level-hint">Tu elección determina cómo Ngbot adapta sus explicaciones.</p>
             </div>
 
             <button
@@ -231,14 +230,14 @@ type Act = 0 | 1 | 2 | 3;
       height: 200px;
 
       .hex-path {
-        stroke-dasharray: 200;
-        stroke-dashoffset: 200;
-        animation: draw 1.5s ease forwards 0.5s;
+        animation: draw 1.5s ease-in both 0.5s;
       }
     }
 
     @keyframes draw {
-      to { stroke-dashoffset: 0; }
+      0%   { stroke-dasharray: 168; stroke-dashoffset: 168; }
+      99%  { stroke-dasharray: 168; stroke-dashoffset: 0; }
+      100% { stroke-dasharray: none; stroke-dashoffset: 0; }
     }
 
     @keyframes breathing {
@@ -265,24 +264,33 @@ type Act = 0 | 1 | 2 | 3;
       50% { opacity: 0; }
     }
 
-    @keyframes eyeBlink {
-      0%, 88%, 100% { transform: scaleY(1); opacity: 1; }
-      93% { transform: scaleY(0.15); opacity: 0.8; }
-    }
-
-    @keyframes eyeGlow {
-      0%, 100% { opacity: 0.9; }
-      50% { opacity: 1; filter: drop-shadow(0 0 2px #7C3AED); }
-    }
-
     .bot-eye {
-      animation: eyeBlink 4s ease-in-out infinite, eyeGlow 2s ease-in-out infinite;
+      animation: eyeMove 6s ease-in-out infinite, eyeGlow 2s ease-in-out infinite;
       transform-origin: center;
       transform-box: fill-box;
     }
 
     .bot-eye:last-child {
       animation-delay: 0.07s, 0.5s;
+    }
+
+    @keyframes eyeMove {
+      0%   { transform: translate(0, 0) scaleY(1); }
+      10%  { transform: translate(1.5px, -0.7px) scaleY(1); }
+      20%  { transform: translate(-1.2px, -0.4px) scaleY(1); }
+      35%  { transform: translate(0, 0) scaleY(1); }
+      48%  { transform: translate(0, 0) scaleY(0.15); }
+      52%  { transform: translate(0, 0) scaleY(1); }
+      65%  { transform: translate(-1.5px, 0.7px) scaleY(1); }
+      80%  { transform: translate(1px, 0.5px) scaleY(1); }
+      88%  { transform: translate(1px, 0.5px) scaleY(0.15); }
+      92%  { transform: translate(1px, 0.5px) scaleY(1); }
+      100% { transform: translate(0, 0) scaleY(1); }
+    }
+
+    @keyframes eyeGlow {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; filter: drop-shadow(0 0 2px #7C3AED); }
     }
 
     // Act 2
@@ -313,18 +321,6 @@ type Act = 0 | 1 | 2 | 3;
       gap: 0.5rem;
       margin-bottom: 1rem;
       line-height: 1.1;
-    }
-
-    .angular-badge {
-      background: var(--accent-angular);
-      color: white;
-      font-family: var(--font-mono);
-      font-size: 0.5em;
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
-      font-weight: 700;
-      letter-spacing: 0;
-      vertical-align: middle;
     }
 
     .brand-subtitle {
@@ -421,6 +417,14 @@ type Act = 0 | 1 | 2 | 3;
         border-color: var(--accent-primary);
         box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
       }
+    }
+
+    .level-hint {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      text-align: center;
     }
 
     .level-cards {
@@ -528,7 +532,7 @@ export class WelcomeComponent {
 
   readonly levels: Array<{ id: UserLevel; name: string; icon: string; description: string }> = [
     { id: 'beginner', name: 'Principiante', icon: '🌱', description: 'Nuevo en Angular y frameworks' },
-    { id: 'intermediate', name: 'Con bases', icon: '⚡', description: 'Conozco JS/TS, algo de frameworks' },
+    { id: 'intermediate', name: 'Con experiencia', icon: '⚡', description: 'Manejo JavaScript moderno y algo de frameworks' },
     { id: 'developer', name: 'Desarrollador', icon: '🚀', description: 'Web dev, aprendo Angular' },
   ];
 

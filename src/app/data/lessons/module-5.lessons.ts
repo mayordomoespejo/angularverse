@@ -670,7 +670,7 @@ bootstrapApplication(AppComponent, {
     aiContext:
       'El usuario está aprendiendo lazy loading en Angular 19/20 con loadComponent y loadChildren. Ha visto visualmente cómo los chunks JS se cargan bajo demanda y se cachean en visitas posteriores. Puede preguntar sobre preloading, withPreloading, code splitting, bundle analysis, o cuándo usar loadComponent vs loadChildren.',
     introMessage:
-      'Esta lección muestra cómo el lazy loading divide tu app en chunks JS que se cargan solo cuando el usuario los necesita.\n\nObs el panel "Network" del preview: `main.js` se carga al inicio, pero `catalogo.js`, `favoritos.js` y `perfil.js` solo cuando navegas a esas rutas. En la segunda visita ya están en caché.\n\nPregúntame sobre `withPreloading`, cómo analizar el bundle, o cuándo usar `loadChildren` vs `loadComponent`.',
+      'Esta lección muestra cómo el lazy loading divide tu app en chunks JS que se cargan solo cuando el usuario los necesita.\n\nObserva el panel "Network" del preview: `main.js` se carga al inicio, pero `catalogo.js`, `favoritos.js` y `perfil.js` solo cuando navegas a esas rutas. En la segunda visita ya están en caché.\n\nPregúntame sobre `withPreloading`, cómo analizar el bundle, o cuándo usar `loadChildren` vs `loadComponent`.',
     suggestedQuestions: [
       '¿Cuál es la diferencia entre loadComponent y loadChildren?',
       '¿Qué hace withPreloading(PreloadAllModules) exactamente?',

@@ -248,7 +248,7 @@ Tu rol es **leer, observar y entender**. El código ya está preparado para que 
         type: 'tip',
         variant: 'angular',
         content:
-          'Atajo de teclado: Ctrl+Shift+Z activa el modo "Zen" — oculta todo excepto el editor para cuando quieras concentrarte solo en el código.',
+          'Consejo: si quieres profundizar en un fragmento de código que ves en el panel Código, selecciónalo y pregúntale a Ngbot directamente. Ngbot conoce el contexto exacto de la lección.',
       },
     ],
     starterCode: `import { Component, signal, computed } from '@angular/core';
@@ -447,8 +447,8 @@ Conozco el contenido específico de cada lección. No soy un chatbot genérico �
 Lee la narrativa e interactúa con el Preview para explorar los tres paneles.`,
     suggestedQuestions: [
       '¿Cómo funciona el sistema de XP?',
-      '¿Puedo ejecutar código Angular real aquí?',
-      '¿Cómo funciona el editor de código?',
+      '¿Qué diferencia hay entre el panel Código y el Preview?',
+      '¿Puedo copiar el código de las lecciones?',
     ],
     prerequisites: ['L0.1'],
     nextLesson: 'L0.3',
@@ -495,7 +495,7 @@ Lee la narrativa e interactúa con el Preview para explorar los tres paneles.`,
         type: 'tip',
         variant: 'success',
         content:
-          '¡Listo para comenzar el aprendizaje real! La siguiente lección es el Módulo 1: Fundamentos de Angular. Pulsa "Lección completada" para continuar.',
+          '¡El módulo de bienvenida está completo! La siguiente parada es el Módulo 1: Fundamentos de Angular. Pulsa "Lección completada" para continuar.',
       },
     ],
     starterCode: `import { Component, signal, computed } from '@angular/core';
@@ -691,10 +691,10 @@ export class PerfilAprendizajeComponent {
 **Sobre el progreso:**
 Tu avance se sincroniza automáticamente — puedes continuar desde cualquier dispositivo.
 
-Cuando termines esta lección, comienza el **Módulo 1: Fundamentos** — ahí empieza el aprendizaje real de Angular.`,
+Cuando termines esta lección, comienza el **Módulo 1: Fundamentos** — ahí entra Angular en escena.`,
     suggestedQuestions: [
       '¿Puedo cambiar mi nivel más adelante?',
-      '¿Se guarda mi progreso en la nube?',
+      '¿Dónde se guarda mi progreso?',
       '¿Cuál es el primer tema que aprenderé?',
     ],
     prerequisites: ['L0.2'],

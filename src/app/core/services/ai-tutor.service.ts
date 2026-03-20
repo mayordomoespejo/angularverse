@@ -5,9 +5,10 @@ import type { ChatMessage } from '../models/chat-message.model';
 import type { UserLevel } from '../models/user-profile.model';
 
 const MODELS = [
-  'mistralai/mistral-small-3.1-24b-instruct:free',
+  'google/gemma-3-27b-it:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'google/gemini-2.0-flash-exp:free',
+  'qwen/qwen3-coder:free',
+  'nousresearch/hermes-3-llama-3.1-405b:free',
 ];
 
 export interface LessonContext {

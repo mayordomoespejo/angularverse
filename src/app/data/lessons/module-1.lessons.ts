@@ -166,7 +166,7 @@ export class AngularTimelineComponent {
     .hito::before {
       content: '';
       position: absolute;
-      left: 3.125rem;
+      left: calc(3.25rem - 3px);
       top: 1.1rem;
       width: 8px;
       height: 8px;
@@ -214,7 +214,7 @@ export class AngularTimelineComponent {
       border-left: 2px solid rgba(139,92,246,0.3);
     }
     .hito.destacado::before {
-      left: 3.625rem;
+      left: calc(3.75rem - 3px);
     }
     .hito-content span {
       font-size: 0.8125rem;

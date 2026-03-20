@@ -116,7 +116,7 @@ interface ModuleGroup {
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: var(--letter-wider);
       padding: 0.25rem 0.5rem;
       background: var(--bg-elevated);
       border-radius: 4px;
@@ -203,7 +203,7 @@ interface ModuleGroup {
       border-radius: 6px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       pointer-events: none;
-      z-index: 9999;
+      z-index: var(--z-modal);
       animation: fadeIn 120ms ease;
     }
 
@@ -216,6 +216,45 @@ interface ModuleGroup {
       0%   { opacity: 1; transform: translateY(0) scale(1); }
       20%  { opacity: 1; transform: translateY(-4px) scale(1.15); }
       100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
+    }
+
+    @media (max-width: 768px) {
+      .timeline-stats {
+        display: none;
+      }
+
+      .timeline-bar {
+        padding: 0.375rem 0.75rem;
+        gap: 0.75rem;
+      }
+
+      .module-label {
+        font-size: 0.5rem;
+        padding: 0.125rem 0.375rem;
+        letter-spacing: var(--letter-wide);
+      }
+
+      .module-nodes {
+        gap: 0.5rem;
+      }
+
+      .module-connector {
+        width: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .module-label {
+        display: none;
+      }
+
+      .module-nodes {
+        gap: 0.375rem;
+      }
+
+      .module-connector {
+        width: 10px;
+      }
     }
   `],
 })

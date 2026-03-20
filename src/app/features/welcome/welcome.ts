@@ -33,16 +33,12 @@ type Act = 0 | 1 | 2 | 3;
         @if (currentAct() <= 1) {
           <div class="act act-intro" [class.visible]="currentAct() === 0">
             <div class="angular-logo-nebula" aria-hidden="true">
-              <svg viewBox="0 0 250 250" class="logo-svg">
-                <defs>
-                  <linearGradient id="angularGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#DD0031"/>
-                    <stop offset="100%" stop-color="#7C3AED"/>
-                  </linearGradient>
-                </defs>
-                <polygon points="125,5 250,46 210,214 125,245 40,214 0,46" fill="url(#angularGrad)" opacity="0.15"/>
-                <path d="M125 30 L196 53 L171 175 L125 195 L79 175 L54 53 Z" fill="none" stroke="url(#angularGrad)" stroke-width="3" class="shield-path"/>
-                <path d="M85 155 L108 95 L125 145 L142 95 L165 155 M95 135 L155 135" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <svg viewBox="0 0 60 60" fill="none" class="logo-svg">
+                <path d="M30,2 L54,16 L54,44 L30,58 L6,44 L6,16 Z" fill="#1F2937" stroke="#7C3AED" stroke-width="2" class="hex-path"/>
+                <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
+                <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
+                <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
               </svg>
             </div>
             <p class="typewriter-text">{{ typedText() }}<span class="cursor">|</span></p>
@@ -53,15 +49,22 @@ type Act = 0 | 1 | 2 | 3;
         @if (currentAct() === 2) {
           <div class="act act-reveal">
             <div class="brand-lockup">
+              <div class="brand-ngbot-icon" aria-hidden="true">
+                <svg width="48" height="48" viewBox="0 0 60 60" fill="none">
+                  <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2"/>
+                  <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
+                  <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
+                  <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
+                </svg>
+              </div>
               <h1 class="brand-title">
-                <span class="angular-badge">ng</span>
                 <span class="brand-word">AngularVerse</span>
               </h1>
-              <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código real. Con un tutor que te entiende.</p>
+              <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código en contexto. Con un tutor que te entiende.</p>
               <div class="feature-pills">
-                <span class="pill">⚡ Angular 19 Signals</span>
                 <span class="pill">🤖 AI Tutor Ngbot</span>
-                <span class="pill">💻 Editor en vivo</span>
+                <span class="pill">🚀 De cero a producción</span>
                 <span class="pill">🏆 Sistema de XP</span>
               </div>
             </div>
@@ -107,6 +110,7 @@ type Act = 0 | 1 | 2 | 3;
                   </button>
                 }
               </div>
+              <p class="level-hint">Tu elección determina cómo Ngbot adapta sus explicaciones.</p>
             </div>
 
             <button
@@ -225,15 +229,15 @@ type Act = 0 | 1 | 2 | 3;
       width: 200px;
       height: 200px;
 
-      .shield-path {
-        stroke-dasharray: 600;
-        stroke-dashoffset: 600;
-        animation: draw 2s ease forwards 0.5s;
+      .hex-path {
+        animation: draw 1.5s ease-in both 0.5s;
       }
     }
 
     @keyframes draw {
-      to { stroke-dashoffset: 0; }
+      0%   { stroke-dasharray: 168; stroke-dashoffset: 168; }
+      99%  { stroke-dasharray: 168; stroke-dashoffset: 0; }
+      100% { stroke-dasharray: none; stroke-dashoffset: 0; }
     }
 
     @keyframes breathing {
@@ -260,6 +264,35 @@ type Act = 0 | 1 | 2 | 3;
       50% { opacity: 0; }
     }
 
+    .bot-eye {
+      animation: eyeMove 6s ease-in-out infinite, eyeGlow 2s ease-in-out infinite;
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+
+    .bot-eye:last-child {
+      animation-delay: 0.07s, 0.5s;
+    }
+
+    @keyframes eyeMove {
+      0%   { transform: translate(0, 0) scaleY(1); }
+      10%  { transform: translate(1.5px, -0.7px) scaleY(1); }
+      20%  { transform: translate(-1.2px, -0.4px) scaleY(1); }
+      35%  { transform: translate(0, 0) scaleY(1); }
+      48%  { transform: translate(0, 0) scaleY(0.15); }
+      52%  { transform: translate(0, 0) scaleY(1); }
+      65%  { transform: translate(-1.5px, 0.7px) scaleY(1); }
+      80%  { transform: translate(1px, 0.5px) scaleY(1); }
+      88%  { transform: translate(1px, 0.5px) scaleY(0.15); }
+      92%  { transform: translate(1px, 0.5px) scaleY(1); }
+      100% { transform: translate(0, 0) scaleY(1); }
+    }
+
+    @keyframes eyeGlow {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; filter: drop-shadow(0 0 2px #7C3AED); }
+    }
+
     // Act 2
     .act-reveal {
       text-align: center;
@@ -269,10 +302,18 @@ type Act = 0 | 1 | 2 | 3;
       margin-bottom: 2rem;
     }
 
+    .brand-ngbot-icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+      animation: breathing 3s ease-in-out infinite;
+    }
+
     .brand-title {
-      font-family: var(--font-display);
+      font-family: var(--font-body);
       font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 900;
+      font-weight: 800;
+      letter-spacing: -0.03em;
       color: var(--text-primary);
       display: flex;
       align-items: center;
@@ -280,18 +321,6 @@ type Act = 0 | 1 | 2 | 3;
       gap: 0.5rem;
       margin-bottom: 1rem;
       line-height: 1.1;
-    }
-
-    .angular-badge {
-      background: var(--accent-angular);
-      color: white;
-      font-family: var(--font-mono);
-      font-size: 0.5em;
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
-      font-weight: 700;
-      letter-spacing: 0;
-      vertical-align: middle;
     }
 
     .brand-subtitle {
@@ -388,6 +417,14 @@ type Act = 0 | 1 | 2 | 3;
         border-color: var(--accent-primary);
         box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
       }
+    }
+
+    .level-hint {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      text-align: center;
     }
 
     .level-cards {
@@ -495,7 +532,7 @@ export class WelcomeComponent {
 
   readonly levels: Array<{ id: UserLevel; name: string; icon: string; description: string }> = [
     { id: 'beginner', name: 'Principiante', icon: '🌱', description: 'Nuevo en Angular y frameworks' },
-    { id: 'intermediate', name: 'Con bases', icon: '⚡', description: 'Conozco JS/TS, algo de frameworks' },
+    { id: 'intermediate', name: 'Con experiencia', icon: '⚡', description: 'Manejo JavaScript moderno y algo de frameworks' },
     { id: 'developer', name: 'Desarrollador', icon: '🚀', description: 'Web dev, aprendo Angular' },
   ];
 

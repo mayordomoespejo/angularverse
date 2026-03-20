@@ -274,13 +274,13 @@ export class AngularTimelineComponent {
     language: 'typescript',
     aiContext:
       'El usuario está aprendiendo qué es Angular conceptualmente. Explica la filosofía del framework de forma accesible. Usa analogías: Angular es como comprar una cocina completamente equipada vs React que es comprar una cocina vacía y elegir cada electrodoméstico. Si preguntan sobre comparativas con otros frameworks, sé equilibrado y honesto. La versión actual es v19/v20.',
-    introMessage: `Bienvenido al **Módulo 1: Fundamentos**. Esta primera lección es conceptual — no escribirás código todavía, sino que entenderás qué es Angular y por qué existe.
+    introMessage: `Bienvenido al **Módulo 1: Fundamentos**. Esta primera lección es conceptual — el objetivo es entender qué es Angular y por qué existe antes de analizar su código.
 
 **La narrativa de Teoría:**
 La historia de Angular desde 2009 hasta hoy (v19/v20), qué lo distingue de React y Vue, y por qué es tan popular en proyectos enterprise.
 
 **El código del panel Código:**
-Muestra una timeline de la evolución de Angular — el patrón @for y los class bindings en acción. No necesitas entenderlo aún; lo diseccionaremos en las próximas lecciones.
+Muestra una timeline de la evolución de Angular — el patrón @for y los class bindings en acción. Obsérvalo, no te preocupes si no lo entiendes todo aún; lo diseccionaremos en las próximas lecciones.
 
 **Lo que aprenderás:**
 - La filosofía "opinionated" de Angular y qué significa en la práctica
@@ -288,7 +288,7 @@ Muestra una timeline de la evolución de Angular — el patrón @for y los class
 - La diferencia entre Angular, React y Vue en términos prácticos
 - El estado actual del framework en 2025 (Signals, Control Flow, @defer)
 
-Lee la narrativa a tu ritmo. Si tienes preguntas sobre Angular vs otros frameworks, o sobre qué esperar del módulo, escríbeme aquí.`,
+Lee la narrativa a tu ritmo. Si tienes preguntas sobre Angular vs otros frameworks, o sobre qué esperar del módulo, pregúntame aquí.`,
     suggestedQuestions: [
       '¿Por qué Angular usa TypeScript obligatoriamente?',
       '¿Angular vs React: cuál debo aprender?',
@@ -311,7 +311,7 @@ Lee la narrativa a tu ritmo. Si tienes preguntas sobre Angular vs otros framewor
       {
         type: 'text',
         content:
-          'Antes de escribir tu primer componente, necesitas configurar el entorno. El proceso es sencillo pero requiere algunos pasos concretos.',
+          'Para poder analizar Angular en tu propio entorno, necesitas configurarlo primero. El proceso es sencillo pero requiere algunos pasos concretos.',
       },
       {
         type: 'tip',
@@ -589,7 +589,7 @@ export class CliSetupComponent {
 Muestra los comandos exactos que usarás, en orden. Sirve como referencia rápida.
 
 **Importante:**
-AngularVerse no ejecuta comandos de terminal — para esta lección, el trabajo real ocurre en tu propia terminal. Si encuentras errores al instalar o crear el proyecto, descríbeme el mensaje de error exacto y te ayudo a resolverlo.`,
+AngularVerse no ejecuta comandos de terminal — para esta lección, el trabajo ocurre en tu propia terminal. Si encuentras errores al instalar o crear el proyecto, cuéntame el mensaje de error exacto y te ayudo a resolverlo.`,
     suggestedQuestions: [
       '¿Qué es el Angular CLI exactamente?',
       '¿Por qué usar --standalone?',
@@ -906,12 +906,12 @@ export class ProyectoAnatomiaComponent {
     language: 'typescript',
     aiContext:
       'El usuario está entendiendo la estructura de carpetas de Angular. Puedes explicar en detalle cualquier archivo. Si preguntan sobre NgModules vs Standalone, explica que en Angular moderno usamos Standalone y NgModules son el patrón antiguo que todavía funciona pero no se recomienda para proyectos nuevos.',
-    introMessage: `En esta lección diseccionarás la estructura de archivos que genera \`ng new\`. Entender qué hace cada archivo te ahorra mucha confusión más adelante.
+    introMessage: `Esta lección explora la estructura de archivos que genera \`ng new\`. Entender qué hace cada archivo te ahorra mucha confusión más adelante.
 
 **El código del panel Código:**
 Muestra un explorador de archivos interactivo — haz clic en cualquier archivo para ver su descripción. Los archivos con borde morado son los más importantes.
 
-**Los archivos clave que analizarás:**
+**Los archivos clave que verás:**
 - \`src/main.ts\` — punto de entrada: aquí arranca Angular con \`bootstrapApplication\`
 - \`src/app/app.config.ts\` — proveedores globales: router, HTTP client, etc.
 - \`src/app/app.routes.ts\` — definición de rutas
@@ -1254,7 +1254,7 @@ export class BibliotecaDemoComponent {
     language: 'typescript',
     aiContext:
       'El usuario está creando su primer componente Angular real — LibroCard, el primer componente de la Biblioteca Angular que construirá a lo largo del curso. Los errores más comunes son: olvidar importar signal/input, usar this.variable en el template sin paréntesis para signals e inputs, o no declarar el componente como standalone.',
-    introMessage: `En esta lección crearás **LibroCard** — el primer componente de la Biblioteca Angular, el mini-app que construiremos progresivamente a lo largo del curso.
+    introMessage: `Esta lección presenta **LibroCard** — el primer componente de la Biblioteca Angular, el mini-app que analizaremos progresivamente a lo largo del curso.
 
 **El código del panel Código:**
 Muestra \`LibroCardComponent\` completo con:
@@ -1270,7 +1270,7 @@ Muestra \`LibroCardComponent\` completo con:
 
 Observa el Preview: el botón "Marcar como leído" cambia el estado visualmente. Así es como los signals actualizan la UI automáticamente.
 
-Si algo no tiene sentido, descríbeme la parte concreta y te explico.`,
+Si algo no tiene sentido, pregúntame sobre la parte concreta y te explico.`,
     suggestedQuestions: [
       '¿Qué diferencia hay entre input() y signal()?',
       '¿Cómo importo este componente en otro componente?',
@@ -1654,7 +1654,7 @@ Muestra \`BindingDemoComponent\` con los 4 tipos de binding aplicados al context
 
 Observa el Preview: el botón de búsqueda desactiva el input durante 1.5s, y el input del nombre actualiza el saludo en tiempo real. Así funciona el binding en la práctica.
 
-Si te confundes entre cuándo usar corchetes y cuándo paréntesis, pregúntame con el ejemplo concreto que no te funciona.`,
+Si algo del código del panel no queda claro, pregúntame sobre el binding específico que quieras entender.`,
     suggestedQuestions: [
       '¿Cuándo uso [attr] vs attr="..."?',
       '¿Qué es $event en los event bindings?',

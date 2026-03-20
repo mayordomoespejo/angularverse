@@ -234,7 +234,7 @@ export class BibliotecaListaComponent {
     aiContext:
       'El usuario está aprendiendo qué son los servicios de Angular 19 y cómo crear un @Injectable con providedIn: root. Ha visto BibliotecaService con signals encapsuladas y un componente que lo consume con inject(). Puede preguntar sobre la diferencia entre servicios y componentes, sobre singleton, sobre tree-shaking, o sobre cómo el servicio comparte estado.',
     introMessage:
-      'En esta primera lección del Módulo 4 crearás tu primer servicio Angular.\n\nEl código muestra `BibliotecaService` con `@Injectable({ providedIn: \'root\' })` — una clase que centraliza el estado de los libros y expone métodos para mutarlo. El componente solo consume el servicio, sin guardar estado propio.\n\nPregúntame sobre `@Injectable`, sobre singletons, o sobre por qué separar lógica en servicios.',
+      'En esta primera lección del Módulo 4 analizarás la estructura de un servicio Angular.\n\nEl código muestra `BibliotecaService` con `@Injectable({ providedIn: \'root\' })` — una clase que centraliza el estado de los libros y expone métodos para mutarlo. El componente solo consume el servicio, sin guardar estado propio.\n\nPregúntame sobre `@Injectable`, sobre singletons, o sobre por qué separar lógica en servicios.',
     suggestedQuestions: [
       '¿Cuál es la diferencia entre un servicio y un componente en Angular?',
       '¿Qué significa que un servicio sea "tree-shakeable"?',

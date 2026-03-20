@@ -77,10 +77,10 @@ export type NodeStatus = 'completed' | 'current' | 'locked';
       font-weight: 500;
       white-space: nowrap;
       padding: 0.35rem 0.625rem;
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       pointer-events: none;
-      z-index: 9999;
+      z-index: var(--z-modal);
       animation: fadeIn 120ms ease;
     }
 

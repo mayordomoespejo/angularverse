@@ -231,7 +231,7 @@ export class CatalogoComponent {
     aiContext:
       'El usuario está aprendiendo HttpClient en Angular 19. Ha visto provideHttpClient(), inject(HttpClient), .get<T>(), y el patrón de estados cargando/error/datos con signals. También ha visto toSignal() para conectar observables con el mundo de signals. Puede preguntar sobre la diferencia con HttpClientModule, withFetch(), withInterceptors(), o cómo manejar headers y parámetros en las peticiones.',
     introMessage:
-      'En esta lección conectarás tu app Angular a una API real usando `HttpClient`.\n\nEl código muestra el patrón completo: un servicio con `inject(HttpClient)` que devuelve observables, y un componente que los convierte en signals con `toSignal()` y gestiona estados de carga, éxito y error.\n\nUsa los botones del preview para ver cada estado en acción. Pregúntame sobre `provideHttpClient()`, `toSignal()`, o cómo manejar distintos tipos de peticiones HTTP.',
+      'En esta lección ves cómo conectar una app Angular a una API real usando `HttpClient`.\n\nEl código muestra el patrón completo: un servicio con `inject(HttpClient)` que devuelve observables, y un componente que los convierte en signals con `toSignal()` y gestiona estados de carga, éxito y error.\n\nUsa los botones del preview para ver cada estado en acción. Pregúntame sobre `provideHttpClient()`, `toSignal()`, o cómo manejar distintos tipos de peticiones HTTP.',
     suggestedQuestions: [
       '¿Por qué HttpClient devuelve un Observable en lugar de una Promise?',
       '¿Cómo añado headers o query params a una petición HTTP?',
@@ -756,7 +756,7 @@ export class BuscadorReactivoComponent {
     aiContext:
       'El usuario está aprendiendo switchMap, debounceTime y distinctUntilChanged en Angular 19 para construir un buscador en tiempo real. Ha visto el patrón toObservable(signal) → debounceTime → distinctUntilChanged → filter → switchMap → HTTP. Puede preguntar sobre la diferencia entre switchMap, mergeMap y concatMap, sobre cuándo usar cada uno, o sobre el patrón de búsqueda reactiva.',
     introMessage:
-      'Esta lección muestra el patrón más común de RxJS en aplicaciones Angular: búsqueda reactiva con `switchMap`.\n\nEl log del preview visualiza en tiempo real cómo `debounceTime` espera, cómo `switchMap` cancela peticiones anteriores, y cuándo llega finalmente la respuesta válida.\n\nEscribe algo en el buscador para verlo en acción. Luego pregúntame sobre `switchMap` vs `mergeMap` o sobre cómo funciona la cancelación de observables.',
+      'Esta lección muestra el patrón más común de RxJS en aplicaciones Angular: búsqueda reactiva con `switchMap`.\n\nEl log del preview visualiza en tiempo real cómo `debounceTime` espera, cómo `switchMap` cancela peticiones anteriores, y cuándo llega finalmente la respuesta válida.\n\nInteractúa con el buscador del Preview para verlo en acción. Luego pregúntame sobre `switchMap` vs `mergeMap` o sobre cómo funciona la cancelación de observables.',
     suggestedQuestions: [
       '¿Cuál es la diferencia entre switchMap, mergeMap y concatMap?',
       '¿Cómo funciona realmente la cancelación de peticiones en switchMap?',

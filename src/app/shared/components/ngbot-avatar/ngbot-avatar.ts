@@ -3,6 +3,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 @Component({
   selector: 'app-ngbot-avatar',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.eye-animate]': 'eyeMove()',
+  },
   template: `
     <div class="ngbot-avatar" [class.large]="size() === 'lg'" [class.small]="size() === 'sm'">
       <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="avatar-svg">
@@ -40,9 +43,13 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     </div>
   `,
   styles: [`
+    :host {
+      display: block;
+    }
+
     .ngbot-avatar {
       position: relative;
-      display: inline-flex;
+      display: flex;
       width: 48px;
       height: 48px;
       animation: breathing 3s ease-in-out infinite;
@@ -72,11 +79,22 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
       .eye {
         animation: blink 4s ease-in-out infinite;
+        transform-box: fill-box;
+        transform-origin: center;
       }
 
       .eye:last-of-type {
-        animation-delay: 0.1s;
+        animation-delay: 0.07s;
       }
+    }
+
+    /* Eye movement — solo cuando [eyeMove]="true" */
+    :host(.eye-animate) .avatar-svg .eye {
+      animation: eyeMove 6s ease-in-out infinite, eyeGlow 2s ease-in-out infinite;
+    }
+
+    :host(.eye-animate) .avatar-svg .eye:last-of-type {
+      animation-delay: 0.07s, 0.5s;
     }
 
     .status-dot {
@@ -101,6 +119,25 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       95% { opacity: 0; }
     }
 
+    @keyframes eyeMove {
+      0%   { transform: translate(0, 0) scaleY(1); }
+      10%  { transform: translate(1.5px, -0.7px) scaleY(1); }
+      20%  { transform: translate(-1.2px, -0.4px) scaleY(1); }
+      35%  { transform: translate(0, 0) scaleY(1); }
+      48%  { transform: translate(0, 0) scaleY(0.15); }
+      52%  { transform: translate(0, 0) scaleY(1); }
+      65%  { transform: translate(-1.5px, 0.7px) scaleY(1); }
+      80%  { transform: translate(1px, 0.5px) scaleY(1); }
+      88%  { transform: translate(1px, 0.5px) scaleY(0.15); }
+      92%  { transform: translate(1px, 0.5px) scaleY(1); }
+      100% { transform: translate(0, 0) scaleY(1); }
+    }
+
+    @keyframes eyeGlow {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; filter: drop-shadow(0 0 2px #7C3AED); }
+    }
+
     @keyframes pulseDot {
       0%, 100% {
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
@@ -114,4 +151,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class NgbotAvatarComponent {
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly showStatus = input(true);
+  readonly eyeMove = input(false);
 }

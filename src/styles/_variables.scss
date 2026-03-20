@@ -6,9 +6,15 @@
 
   /* Accents */
   --accent-primary: #8B5CF6;
+  --accent-primary-light: #a78bfa;
+  --accent-primary-dark: #7C3AED;
   --accent-angular: #DD0031;
   --accent-code: #34D399;
   --accent-cyan: #22D3EE;
+  --accent-warning: #f59e0b;
+  --accent-success: #10b981;
+  --accent-error: #ef4444;
+  --accent-xp: #fbbf24;
 
   /* Text — contraste WCAG AA+ */
   --text-primary: #F0F6FC;
@@ -22,6 +28,17 @@
   /* Glows — más pronunciados */
   --glow: rgba(139, 92, 246, 0.25);
   --glow-angular: rgba(221, 0, 49, 0.2);
+
+  /* Semantic color aliases for tip/warning/info blocks */
+  --color-info: #22D3EE;
+  --color-info-bg: rgba(34, 211, 238, 0.08);
+  --color-info-border: rgba(34, 211, 238, 0.2);
+  --color-warning-bg: rgba(245, 158, 11, 0.08);
+  --color-warning-border: rgba(245, 158, 11, 0.2);
+  --color-success-bg: rgba(16, 185, 129, 0.08);
+  --color-success-border: rgba(16, 185, 129, 0.2);
+  --color-angular-bg: rgba(221, 0, 49, 0.08);
+  --color-angular-border: rgba(221, 0, 49, 0.2);
 
   // Spacing scale
   --space-1: 0.25rem;
@@ -55,6 +72,16 @@
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
+
+  // Opacity scale
+  --opacity-disabled: 0.5;
+  --opacity-hover: 0.85;
+
+  // Letter spacing scale
+  --letter-tight: 0.03em;
+  --letter-normal: 0.06em;
+  --letter-wide: 0.08em;
+  --letter-wider: 0.1em;
 
   // Z-index scale
   --z-base: 0;

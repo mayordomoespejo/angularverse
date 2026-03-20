@@ -248,7 +248,7 @@ export class BibliotecaDashboardComponent {
     aiContext:
       'El usuario está aprendiendo el patrón Feature Store con signals en Angular 20. Ha visto BibliotecaStore: signals privados, asReadonly(), computed() para librosFiltrados y totalFavoritos, y effect() para sincronizar con localStorage. Puede preguntar sobre cuándo usar este patrón vs NgRx, sobre providedIn vs provide en el módulo, o sobre cómo compartir el store entre componentes en rutas diferentes.',
     introMessage:
-      'En esta lección construyes tu primer Feature Store con Angular signals puros — sin NgRx, sin RxJS.\n\nEl código muestra `BibliotecaStore`: un servicio inyectable con signals privados, métodos de mutación, y `computed()` para filtrado y conteo de favoritos. El componente solo lee y llama a métodos — nunca muta directamente.\n\nPregúntame sobre el patrón store, asReadonly(), o cuándo vale la pena añadir NgRx.',
+      'En esta lección analizas el patrón Feature Store con Angular signals puros — sin NgRx, sin RxJS.\n\nEl código muestra `BibliotecaStore`: un servicio inyectable con signals privados, métodos de mutación, y `computed()` para filtrado y conteo de favoritos. El componente solo lee y llama a métodos — nunca muta directamente.\n\nPregúntame sobre el patrón store, asReadonly(), o cuándo vale la pena añadir NgRx.',
     suggestedQuestions: [
       '¿Por qué usar asReadonly() en lugar de simplemente no exponer el signal?',
       '¿Cómo comparto este store entre componentes en rutas distintas?',

@@ -88,8 +88,27 @@ import type { Lesson } from '../../core/models/lesson.model';
         <app-lesson-timeline [currentLessonId]="id()" />
       }
 
+      <!-- Mobile panel tabs (visible only on small screens) -->
+      <div class="mobile-panel-tabs">
+        <button
+          class="tab-btn"
+          [class.active]="activeMobilePanel() === 'explain'"
+          (click)="activeMobilePanel.set('explain')"
+        >Lección</button>
+        <button
+          class="tab-btn"
+          [class.active]="activeMobilePanel() === 'code'"
+          (click)="activeMobilePanel.set('code')"
+        >Código</button>
+        <button
+          class="tab-btn"
+          [class.active]="activeMobilePanel() === 'preview'"
+          (click)="activeMobilePanel.set('preview')"
+        >Preview</button>
+      </div>
+
       <!-- Panels grid -->
-      <div class="panels-grid" [class.chat-open]="isChatOpen()">
+      <div class="panels-grid" [class.chat-open]="isChatOpen()" [attr.data-mobile-panel]="activeMobilePanel()">
         <app-explain-panel
           [lesson]="lesson()"
           (lessonCompleted)="onLessonCompleted($event)"
@@ -166,17 +185,6 @@ import type { Lesson } from '../../core/models/lesson.model';
       letter-spacing: -0.03em;
     }
 
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-size: 0.8125rem;
-      color: var(--text-muted);
-    }
-
-    .breadcrumb-sep { color: var(--border-subtle); }
-    .breadcrumb-current { color: var(--text-secondary); }
-
     .topbar-right {
       display: flex;
       align-items: center;
@@ -204,8 +212,35 @@ import type { Lesson } from '../../core/models/lesson.model';
       &.active {
         background: rgba(124, 58, 237, 0.15);
         border-color: var(--accent-primary);
-        color: #a78bfa;
+        color: var(--accent-primary-light);
       }
+    }
+
+    // Mobile panel tabs
+    .mobile-panel-tabs {
+      display: none; /* hidden on desktop */
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.625rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 150ms ease;
+
+      &.active {
+        color: var(--accent-primary);
+        border-bottom-color: var(--accent-primary);
+      }
+      &:hover:not(.active) { color: var(--text-secondary); }
     }
 
     // Panels grid — CSS Grid layout
@@ -225,34 +260,38 @@ import type { Lesson } from '../../core/models/lesson.model';
       }
     }
 
-    .zen-mode {
-      .lesson-topbar {
-        background: rgba(13, 17, 23, 0.95);
-        backdrop-filter: blur(8px);
+    @media (min-width: 769px) {
+      .mobile-panel-tabs { display: none !important; }
+
+      .zen-mode {
+        .lesson-topbar {
+          background: rgba(13, 17, 23, 0.95);
+          backdrop-filter: blur(8px);
+        }
+
+        .panels-grid {
+          grid-template-columns: 1fr;
+
+          app-explain-panel,
+          app-preview-panel {
+            display: none;
+          }
+        }
       }
 
-      .panels-grid {
-        grid-template-columns: 1fr;
+      .lesson-fullscreen {
+        .panels-grid {
+          grid-template-columns: 1fr;
 
-        app-explain-panel,
-        app-preview-panel {
-          display: none;
+          app-code-panel,
+          app-preview-panel {
+            display: none;
+          }
         }
       }
     }
 
-    .lesson-fullscreen {
-      .panels-grid {
-        grid-template-columns: 1fr;
-
-        app-code-panel,
-        app-preview-panel {
-          display: none;
-        }
-      }
-    }
-
-    @media (max-width: 1024px) {
+    @media (max-width: 1024px) and (min-width: 769px) {
       .panels-grid {
         app-preview-panel {
           display: none;
@@ -261,12 +300,30 @@ import type { Lesson } from '../../core/models/lesson.model';
     }
 
     @media (max-width: 768px) {
+      .mobile-panel-tabs {
+        display: flex;
+      }
+
       .panels-grid {
+        grid-template-columns: 1fr !important;
+
         app-explain-panel,
+        app-code-panel,
         app-preview-panel {
           display: none;
         }
       }
+
+      /* Show active panel based on data attribute */
+      .panels-grid[data-mobile-panel="explain"] app-explain-panel { display: flex; flex-direction: column; }
+      .panels-grid[data-mobile-panel="code"] app-code-panel { display: flex; flex-direction: column; }
+      .panels-grid[data-mobile-panel="preview"] app-preview-panel { display: flex; flex-direction: column; }
+    }
+
+    @media (max-width: 480px) {
+      .logo-text { display: none; }
+      .lesson-topbar { padding: 0 0.75rem; height: 44px; }
+      .icon-btn { width: 28px; height: 28px; }
     }
   `],
 })
@@ -285,6 +342,7 @@ export class LessonShellComponent {
   readonly isZenMode = signal(false);
   readonly isChatOpen = signal(true);
   readonly isLessonFullscreen = signal(false);
+  readonly activeMobilePanel = signal<'explain' | 'code' | 'preview'>('explain');
 
   protected readonly _loadEffect = effect(() => {
     const lesson = this.lesson();

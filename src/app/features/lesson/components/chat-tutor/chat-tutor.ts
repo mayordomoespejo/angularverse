@@ -575,6 +575,13 @@ export class ChatTutorComponent {
       }
     });
 
+    // Scroll to bottom when chat is reopened
+    effect(() => {
+      if (this.isOpen()) {
+        setTimeout(() => this.scrollToBottom(), 0);
+      }
+    });
+
     this.destroyRef.onDestroy(() => {
       this.streamSub?.unsubscribe();
     });

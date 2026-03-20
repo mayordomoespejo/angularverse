@@ -213,6 +213,9 @@ export class AngularTimelineComponent {
       margin-left: -0.5rem;
       border-left: 2px solid rgba(139,92,246,0.3);
     }
+    .hito.destacado::before {
+      left: 3.625rem;
+    }
     .hito-content span {
       font-size: 0.8125rem;
       color: #8B949E;

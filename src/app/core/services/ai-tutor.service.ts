@@ -5,10 +5,7 @@ import type { ChatMessage } from '../models/chat-message.model';
 import type { UserLevel } from '../models/user-profile.model';
 
 const MODELS = [
-  'mistralai/mistral-small-3.1-24b-instruct:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'google/gemini-2.0-flash-exp:free',
-  'deepseek/deepseek-chat-v3-0324:free',
+  'openrouter/free',
 ];
 
 export interface LessonContext {
@@ -109,6 +106,11 @@ ${context.aiContext}`;
     })
       .then(async response => {
         if (!response.ok || !response.body) {
+          // 401 = bad key, no point retrying other models
+          if (response.status === 401) {
+            subscriber.error(new Error('API key inválida.'));
+            return;
+          }
           this.fetchStream(messages, subscriber, attempt + 1);
           return;
         }

@@ -7,10 +7,6 @@ export const lessonUnlockGuard: CanActivateFn = (route) => {
   const router = inject(Router);
   const progressService = inject(LessonProgressService);
 
-  if (!progressService.isInitialized()) {
-    return router.createUrlTree(['/welcome']);
-  }
-
   const lessonId = route.paramMap.get('id');
   if (!lessonId) {
     return router.createUrlTree(['/welcome']);

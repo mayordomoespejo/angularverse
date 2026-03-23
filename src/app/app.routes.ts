@@ -1,4 +1,5 @@
 import type { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 import { lessonUnlockGuard } from './core/guards/lesson-unlock.guard';
 
 export const routes: Routes = [
@@ -13,10 +14,21 @@ export const routes: Routes = [
       import('./features/welcome/welcome').then(m => m.WelcomeComponent),
   },
   {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/profile/profile').then(m => m.ProfileComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'lesson/:id',
     loadComponent: () =>
       import('./features/lesson/lesson-shell').then(m => m.LessonShellComponent),
-    canActivate: [lessonUnlockGuard],
+    canActivate: [authGuard, lessonUnlockGuard],
+  },
+  {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./features/auth-callback/auth-callback').then(m => m.AuthCallbackComponent),
   },
   {
     path: '**',

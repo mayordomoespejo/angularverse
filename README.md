@@ -12,7 +12,8 @@ An interactive Angular 19 learning platform with a read-only code viewer, an AI 
 | State | Signals (`signal`, `computed`, `effect`) |
 | Change detection | OnPush + Zoneless-ready |
 | AI tutor | OpenRouter API |
-| Persistence | Supabase (anon device_id, RLS) |
+| Auth | Supabase Auth (OTP + Google OAuth) |
+| Persistence | Supabase (user_progress, chat_history, RLS) |
 | Routing | Angular Router (standalone, lazy) |
 | Styling | Angular component styles (CSS nesting) |
 | Fonts | Inter, JetBrains Mono |
@@ -27,8 +28,12 @@ An interactive Angular 19 learning platform with a read-only code viewer, an AI 
 - Lesson explain panel with narrative blocks: text, tips, warnings, and checkpoints
 - Iframe-based preview panel showing what each Angular concept renders
 - Lesson timeline bar tracking progress across modules
-- XP and streak tracking persisted in Supabase via anonymous device_id pattern
-- Three view modes: default (3 panels), lesson fullscreen, code fullscreen (zen mode)
+- XP and streak tracking persisted in Supabase
+- Three view modes: default (3 panels), lesson fullscreen, zen mode (code only)
+- Auth via email OTP (6-digit boxes) and Google OAuth
+- User profile with avatar upload, level selector, and account deletion
+- Shared `LogoIconComponent` with animated eyes across the app
+- Mobile-first responsive layout: single-panel tabs, adapted headers and timeline
 
 ---
 

@@ -18,6 +18,7 @@ export interface UserProfile {
   streak: UserStreak;
   badges: string[];
   createdAt: string;
+  photoUrl?: string;
 }
 
 export type PersistedState = UserProfile;

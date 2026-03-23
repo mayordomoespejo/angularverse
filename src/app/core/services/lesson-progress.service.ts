@@ -1,22 +1,13 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import type { UserLevel, UserProfile } from '../models/user-profile.model';
 import type { ChatMessage } from '../models/chat-message.model';
 import { ALL_LESSONS } from '../../data/lessons';
 import type { Lesson } from '../models/lesson.model';
 import { SupabaseService } from './supabase.service';
+import { AuthService } from './auth.service';
 
 const STORAGE_KEY = 'angularverse_state';
-const DEVICE_ID_KEY = 'angularverse_device_id';
-
-// ── anonymous device ID (persists forever in localStorage) ───
-function getOrCreateDeviceId(): string {
-  let id = localStorage.getItem(DEVICE_ID_KEY);
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem(DEVICE_ID_KEY, id);
-  }
-  return id;
-}
 
 function createDefaultProfile(): UserProfile {
   return {
@@ -36,11 +27,17 @@ function createDefaultProfile(): UserProfile {
 @Injectable({ providedIn: 'root' })
 export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
-  private readonly deviceId = getOrCreateDeviceId();
+  private readonly auth = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private get userId(): string {
+    return this.auth.currentUser?.id ?? '';
+  }
 
   private readonly _profile = signal<UserProfile | null>(this.loadFromStorage());
 
   readonly profile = this._profile.asReadonly();
+  readonly profile$ = toObservable(this._profile);
   readonly isInitialized = computed(() => this._profile() !== null && this._profile()!.userName !== '');
 
   readonly xpTotal = computed(() => this._profile()?.xpTotal ?? 0);
@@ -49,6 +46,7 @@ export class LessonProgressService {
   readonly streak = computed(() => this._profile()?.streak ?? { lastActiveDate: '', count: 0 });
   readonly userName = computed(() => this._profile()?.userName ?? '');
   readonly userLevel = computed(() => this._profile()?.level ?? 'beginner');
+  readonly photoUrl = computed(() => this._profile()?.photoUrl ?? '');
 
   readonly allLessons = computed((): Lesson[] => ALL_LESSONS);
 
@@ -58,13 +56,17 @@ export class LessonProgressService {
       const profile = this._profile();
       if (profile) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-        // Non-blocking Supabase sync — fire-and-forget
-        this.syncProfileToSupabase(profile);
       }
     });
 
-    // On startup: try to hydrate from Supabase and merge
-    this.hydrateFromSupabase();
+    // React to Auth state — sync with Supabase once user is known
+    this.auth.user$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((user) => {
+      if (!user) return;
+      // Ensure the row exists (ignoreDuplicates = no overwrite on returning users)
+      this.ensureSupabaseRow(user.id);
+      // Hydrate profile from Supabase (merges remote data into local state)
+      this.hydrateFromSupabase(user.id);
+    });
   }
 
   // ── Storage helpers ─────────────────────────────────────────
@@ -81,13 +83,23 @@ export class LessonProgressService {
 
   // ── Supabase sync ────────────────────────────────────────────
 
-  /** On startup: fetch remote row and merge into local state (Supabase wins). */
-  private async hydrateFromSupabase(): Promise<void> {
+  /** Creates the row immediately on login — ignoreDuplicates prevents overwriting returning users. */
+  private ensureSupabaseRow(uid: string): void {
+    this.supabase.client
+      .from('user_progress')
+      .upsert({ user_id: uid }, { onConflict: 'user_id', ignoreDuplicates: true })
+      .then(({ error }) => {
+        if (error) console.warn('[Supabase] ensureSupabaseRow failed:', error.message);
+      });
+  }
+
+  /** On auth: fetch remote row and merge into local state (Supabase wins). */
+  private async hydrateFromSupabase(uid: string): Promise<void> {
     try {
       const { data, error } = await this.supabase.client
         .from('user_progress')
         .select('*')
-        .eq('device_id', this.deviceId)
+        .eq('user_id', uid)
         .maybeSingle();
 
       if (error || !data) return;
@@ -109,24 +121,25 @@ export class LessonProgressService {
         },
         badges: local?.badges ?? [],
         createdAt: local?.createdAt ?? data['created_at'] ?? new Date().toISOString(),
+        photoUrl: data['photo_url'] ?? local?.photoUrl ?? undefined,
       };
 
       // Update signal — will trigger the effect which saves to localStorage
       this._profile.set(merged);
 
       // Also hydrate chat history from Supabase
-      await this.hydrateChatHistoryFromSupabase(merged);
+      await this.hydrateChatHistoryFromSupabase(uid, merged);
     } catch (err) {
       console.warn('[Supabase] hydrateFromSupabase failed:', err);
     }
   }
 
-  private async hydrateChatHistoryFromSupabase(profile: UserProfile): Promise<void> {
+  private async hydrateChatHistoryFromSupabase(uid: string, profile: UserProfile): Promise<void> {
     try {
       const { data, error } = await this.supabase.client
         .from('chat_history')
         .select('lesson_id, messages')
-        .eq('device_id', this.deviceId);
+        .eq('user_id', uid);
 
       if (error || !data || data.length === 0) return;
 
@@ -143,19 +156,23 @@ export class LessonProgressService {
 
   /** Upsert progress row — fire-and-forget, never breaks UX. */
   private syncProfileToSupabase(profile: UserProfile): void {
+    const uid = this.userId;
+    if (!uid) return;
+
     this.supabase.client
       .from('user_progress')
       .upsert(
         {
-          device_id: this.deviceId,
+          user_id: uid,
           name: profile.userName,
           level: profile.level,
           xp_total: profile.xpTotal,
           completed_lessons: profile.completedLessons,
           streak_count: profile.streak.count,
           streak_last_date: profile.streak.lastActiveDate,
+          photo_url: profile.photoUrl ?? null,
         },
-        { onConflict: 'device_id' },
+        { onConflict: 'user_id' },
       )
       .then(({ error }) => {
         if (error) console.warn('[Supabase] syncProfileToSupabase failed:', error.message);
@@ -168,11 +185,11 @@ export class LessonProgressService {
       .from('chat_history')
       .upsert(
         {
-          device_id: this.deviceId,
+          user_id: this.userId,
           lesson_id: lessonId,
           messages,
         },
-        { onConflict: 'device_id,lesson_id' },
+        { onConflict: 'user_id,lesson_id' },
       )
       .then(({ error }) => {
         if (error) console.warn('[Supabase] syncChatHistoryToSupabase failed:', error.message);
@@ -186,6 +203,31 @@ export class LessonProgressService {
     profile.userName = name;
     profile.level = level;
     this._profile.set(profile);
+    this.syncProfileToSupabase(profile);
+  }
+
+  updateLevel(level: UserLevel): void {
+    const profile = this._profile();
+    if (!profile) return;
+    const updated = { ...profile, level };
+    this._profile.set(updated);
+    this.syncProfileToSupabase(updated);
+  }
+
+  updateUserName(name: string): void {
+    const profile = this._profile();
+    if (!profile) return;
+    const updated = { ...profile, userName: name };
+    this._profile.set(updated);
+    this.syncProfileToSupabase(updated);
+  }
+
+  updatePhotoUrl(url: string): void {
+    const profile = this._profile();
+    if (!profile) return;
+    const updated = { ...profile, photoUrl: url };
+    this._profile.set(updated);
+    this.syncProfileToSupabase(updated);
   }
 
   completeLesson(lessonId: string): void {
@@ -212,7 +254,7 @@ export class LessonProgressService {
 
     const nextLessonId = lesson?.nextLesson ?? profile.currentLessonId;
 
-    this._profile.set({
+    const updated: UserProfile = {
       ...profile,
       completedLessons: completed,
       xpTotal: profile.completedLessons.includes(lessonId)
@@ -220,7 +262,9 @@ export class LessonProgressService {
         : profile.xpTotal + xpGained,
       currentLessonId: nextLessonId ?? profile.currentLessonId,
       streak: newStreak,
-    });
+    };
+    this._profile.set(updated);
+    this.syncProfileToSupabase(updated);
   }
 
   getCurrentLesson(): Lesson | null {

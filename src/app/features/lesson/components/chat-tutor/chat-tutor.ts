@@ -32,11 +32,6 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
           <app-ngbot-avatar size="sm" [showStatus]="true" [eyeMove]="true" />
           <div class="ngbot-info">
             <span class="ngbot-name">Ngbot</span>
-            @if (isStreaming()) {
-              <span class="ngbot-status">
-                <span class="streaming-indicator">escribiendo...</span>
-              </span>
-            }
           </div>
         </div>
 
@@ -100,7 +95,11 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
               }
               @if (msg.role === 'user') {
                 <div class="msg-user-avatar">
-                  <span>{{ userInitial() }}</span>
+                  @if (userPhoto()) {
+                    <img [src]="userPhoto()" alt="Tu avatar" class="msg-user-photo" />
+                  } @else {
+                    <span>{{ userInitial() }}</span>
+                  }
                 </div>
               }
             </div>
@@ -367,6 +366,14 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
       font-weight: 700;
       color: white;
       flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .msg-user-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
     }
 
     .msg-bubble {
@@ -509,13 +516,18 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
         max-height: 360px;
       }
 
-      .chat-bar-chips {
-        gap: 0.375rem;
+      .chat-bar {
+        height: 52px;
+        min-height: unset;
+        padding: 0 1rem;
+      }
 
-        .chip {
-          font-size: 0.6875rem;
-          padding: 0.25rem 0.625rem;
-        }
+      .chat-bar-chips {
+        display: none;
+      }
+
+      .toggle-btn {
+        margin-left: auto;
       }
 
       .msg-bubble {
@@ -546,6 +558,7 @@ export class ChatTutorComponent {
 
   readonly userName = computed(() => this.progressService.userName());
   readonly userInitial = computed(() => this.userName().charAt(0).toUpperCase() || 'U');
+  readonly userPhoto = this.progressService.photoUrl;
   readonly lessonTitle = computed(() => this.lesson()?.title ?? 'Angular');
   readonly suggestedQuestions = computed(() => this.lesson()?.suggestedQuestions?.slice(0, 3) ?? []);
   readonly canSend = computed(() => this.inputValue().trim().length > 0 && !this.isStreaming());

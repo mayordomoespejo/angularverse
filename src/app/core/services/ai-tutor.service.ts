@@ -108,6 +108,11 @@ ${context.aiContext}`;
     })
       .then(async response => {
         if (!response.ok || !response.body) {
+          // 401 = bad key, no point retrying other models
+          if (response.status === 401) {
+            subscriber.error(new Error('API key inválida.'));
+            return;
+          }
           this.fetchStream(messages, subscriber, attempt + 1);
           return;
         }

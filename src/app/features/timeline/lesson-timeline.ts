@@ -234,12 +234,20 @@ interface ModuleGroup {
         letter-spacing: var(--letter-wide);
       }
 
-      .module-nodes {
+      .module-group {
+        gap: 1rem;
+      }
+
+      .timeline-track {
         gap: 0.5rem;
       }
 
+      .module-nodes {
+        gap: 0.625rem;
+      }
+
       .module-connector {
-        width: 16px;
+        width: 20px;
       }
     }
 
@@ -248,12 +256,20 @@ interface ModuleGroup {
         display: none;
       }
 
-      .module-nodes {
+      .module-group {
+        gap: 0.875rem;
+      }
+
+      .timeline-track {
         gap: 0.375rem;
       }
 
+      .module-nodes {
+        gap: 0.5rem;
+      }
+
       .module-connector {
-        width: 10px;
+        width: 14px;
       }
     }
   `],

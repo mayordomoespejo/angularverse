@@ -13,6 +13,7 @@ import { filter, from, take } from 'rxjs';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LevelSelectorComponent } from '../../shared/components/level-selector/level-selector.component';
+import { LogoIconComponent } from '../../shared/components/logo-icon/logo-icon';
 import type { UserLevel } from '../../core/models/user-profile.model';
 
 type Act = 0 | 1 | 2 | 3;
@@ -21,7 +22,7 @@ type Act3Step = 'email' | 'otp' | 'profile';
 @Component({
   selector: 'app-welcome',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, LevelSelectorComponent],
+  imports: [FormsModule, LevelSelectorComponent, LogoIconComponent],
   template: `
     <div class="welcome-shell" [attr.data-act]="currentAct()">
       <!-- Particle field -->
@@ -40,13 +41,7 @@ type Act3Step = 'email' | 'otp' | 'profile';
         @if (currentAct() <= 1) {
           <div class="act act-intro" [class.visible]="currentAct() === 0">
             <div class="angular-logo-nebula" aria-hidden="true">
-              <svg viewBox="0 0 60 60" fill="none" class="logo-svg">
-                <path d="M30,2 L54,16 L54,44 L30,58 L6,44 L6,16 Z" fill="#1F2937" stroke="#7C3AED" stroke-width="2" class="hex-path"/>
-                <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
-                <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
-                <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
-              </svg>
+              <app-logo-icon class="logo-svg" />
             </div>
             <p class="typewriter-text">{{ typedText() }}<span class="cursor">|</span></p>
           </div>
@@ -57,13 +52,7 @@ type Act3Step = 'email' | 'otp' | 'profile';
           <div class="act act-reveal">
             <div class="brand-lockup">
               <div class="brand-ngbot-icon" aria-hidden="true">
-                <svg width="48" height="48" viewBox="0 0 60 60" fill="none">
-                  <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2"/>
-                  <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
-                  <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
-                  <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
-                </svg>
+                <app-logo-icon class="brand-ngbot-svg" />
               </div>
               <h1 class="brand-title">
                 <span class="brand-word">AngularVerse</span>
@@ -396,6 +385,11 @@ type Act3Step = 'email' | 'otp' | 'profile';
       justify-content: center;
       margin-bottom: 1rem;
       animation: breathing 3s ease-in-out infinite;
+    }
+
+    .brand-ngbot-svg {
+      width: 48px;
+      height: 48px;
     }
 
     .brand-title {

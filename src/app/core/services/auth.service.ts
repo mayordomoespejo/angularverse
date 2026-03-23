@@ -96,7 +96,11 @@ export class AuthService {
     return from(
       this.supabase.client.functions.invoke('delete-account')
         .then(({ error }) => { if (error) throw error; })
-        .then(() => { this._session$.next(null); })
+        .then(() => {
+          localStorage.removeItem('sb-hkikabkcrdyeqrkhcxbu-auth-token');
+          localStorage.removeItem('angularverse_state');
+          this._session$.next(null);
+        })
     );
   }
 

@@ -32,11 +32,6 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
           <app-ngbot-avatar size="sm" [showStatus]="true" [eyeMove]="true" />
           <div class="ngbot-info">
             <span class="ngbot-name">Ngbot</span>
-            @if (isStreaming()) {
-              <span class="ngbot-status">
-                <span class="streaming-indicator">escribiendo...</span>
-              </span>
-            }
           </div>
         </div>
 
@@ -521,13 +516,18 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
         max-height: 360px;
       }
 
-      .chat-bar-chips {
-        gap: 0.375rem;
+      .chat-bar {
+        height: 52px;
+        min-height: unset;
+        padding: 0 1rem;
+      }
 
-        .chip {
-          font-size: 0.6875rem;
-          padding: 0.25rem 0.625rem;
-        }
+      .chat-bar-chips {
+        display: none;
+      }
+
+      .toggle-btn {
+        margin-left: auto;
       }
 
       .msg-bubble {

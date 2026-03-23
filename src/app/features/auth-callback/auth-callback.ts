@@ -3,10 +3,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { LogoIconComponent } from '../../shared/components/logo-icon/logo-icon';
 
 @Component({
   selector: 'app-auth-callback',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [LogoIconComponent],
   template: `
     <div class="callback-shell">
       <div class="nebula nebula-1" aria-hidden="true"></div>
@@ -14,13 +16,7 @@ import { SupabaseService } from '../../core/services/supabase.service';
 
       <div class="callback-content">
         <div class="logo-wrapper" aria-hidden="true">
-          <svg viewBox="0 0 60 60" fill="none" class="logo-svg">
-            <path d="M30,2 L54,16 L54,44 L30,58 L6,44 L6,16 Z" fill="#1F2937" stroke="#7C3AED" stroke-width="2"/>
-            <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
-            <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="24" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
-            <circle cx="36" cy="34" r="2" fill="#7C3AED" class="bot-eye"/>
-          </svg>
+          <app-logo-icon class="logo-svg" />
         </div>
 
         <p class="callback-text">Iniciando sesión...</p>

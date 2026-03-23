@@ -15,6 +15,7 @@ import { ExplainPanelComponent } from './components/explain-panel/explain-panel'
 import { CodePanelComponent } from './components/code-panel/code-panel';
 import { PreviewPanelComponent } from './components/preview-panel/preview-panel';
 import { ChatTutorComponent } from './components/chat-tutor/chat-tutor';
+import { LogoIconComponent } from '../../shared/components/logo-icon/logo-icon';
 import type { Lesson } from '../../core/models/lesson.model';
 
 @Component({
@@ -26,6 +27,7 @@ import type { Lesson } from '../../core/models/lesson.model';
     CodePanelComponent,
     PreviewPanelComponent,
     ChatTutorComponent,
+    LogoIconComponent,
   ],
   template: `
     <div class="lesson-shell" [class.zen-mode]="isZenMode()" [class.lesson-fullscreen]="isLessonFullscreen()">
@@ -33,13 +35,7 @@ import type { Lesson } from '../../core/models/lesson.model';
       <header class="lesson-topbar">
         <div class="topbar-left">
           <button class="logo-btn" (click)="navigateHome()" title="AngularVerse Home">
-            <svg viewBox="0 0 60 60" fill="none" class="logo-icon">
-              <polygon points="30,2 54,16 54,44 30,58 6,44 6,16" fill="#1F2937" stroke="#7C3AED" stroke-width="2"/>
-              <path d="M30 14 L44 20 L44 32 Q44 42 30 48 Q16 42 16 32 L16 20 Z" fill="none" stroke="#DD0031" stroke-width="2.5"/>
-              <path d="M24 28 L28 20 L32 28 M25.5 26 L34.5 26" stroke="#DD0031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="24" cy="34" r="2" fill="#7C3AED"/>
-              <circle cx="36" cy="34" r="2" fill="#7C3AED"/>
-            </svg>
+            <app-logo-icon class="logo-icon" />
             <span class="logo-text">AngularVerse</span>
           </button>
         </div>
@@ -369,23 +365,18 @@ import type { Lesson } from '../../core/models/lesson.model';
         height: 52px;
       }
 
-      .topbar-right {
-        gap: 0.5rem;
-      }
-
       .logo-icon {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
       }
 
       .icon-btn {
-        width: 36px;
-        height: 36px;
+        display: none;
       }
 
       .user-avatar-btn {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
       }
     }
   `],

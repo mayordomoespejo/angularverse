@@ -131,11 +131,11 @@ export class AngularTimelineComponent {
     }
     .timeline-container {
       width: 100%;
-      max-width: 560px;
+      max-width: 520px;
     }
     h2 {
-      font-size: 1.125rem;
-      font-weight: 700;
+      font-size: 1rem;
+      font-weight: 600;
       color: #E6EDF3;
       margin-bottom: 1.5rem;
       text-align: center;
@@ -144,80 +144,83 @@ export class AngularTimelineComponent {
     .timeline {
       display: flex;
       flex-direction: column;
-      gap: 0;
-      position: relative;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 3.25rem;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: #21262D;
+      gap: 0.375rem;
     }
     .hito {
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
-      padding: 0.75rem 0;
-      position: relative;
+      border-radius: 8px;
+      padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+      padding-block: 0.375rem;
+      transition: background 150ms ease;
+      cursor: default;
     }
-    .hito::before {
-      content: '';
-      position: absolute;
-      left: 3.125rem;
-      top: 1.1rem;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #30363D;
-      border: 2px solid #21262D;
-      z-index: 1;
-    }
-    .hito.destacado::before {
-      background: #8B5CF6;
-      border-color: #8B5CF6;
-      box-shadow: 0 0 8px rgba(139,92,246,0.5);
-    }
+    .hito:hover { background: rgba(255,255,255,0.03); }
+    .hito.destacado { background: rgba(139,92,246,0.06); }
+    .hito.destacado:hover { background: rgba(139,92,246,0.1); }
     .hito-anio {
+      width: 3rem;
+      text-align: right;
+      padding-right: 0.5rem;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+      font-size: 0.625rem;
       font-weight: 500;
       color: #8B949E;
-      min-width: 2.75rem;
-      padding-top: 0.1rem;
-      text-align: right;
+      padding-top: 0.2rem;
+      flex-shrink: 0;
+      line-height: 1;
     }
-    .hito.destacado .hito-anio {
-      color: #A78BFA;
-    }
-    .hito-content {
-      padding-left: 0.75rem;
+    .hito.destacado .hito-anio { color: #A78BFA; }
+    .hito-track {
+      width: 1.25rem;
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      gap: 0.15rem;
+      align-items: center;
+      position: relative;
+    }
+    .hito-track .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #30363D;
+      border: 1.5px solid #21262D;
+      margin-top: 0.3rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      transition: all 150ms ease;
+    }
+    .hito:hover .hito-track .dot { background: #8B949E; }
+    .hito.destacado .hito-track .dot {
+      background: #8B5CF6;
+      border-color: #0D1117;
+      width: 9px;
+      height: 9px;
+      margin-top: 0.25rem;
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+    }
+    .hito.destacado:hover .hito-track .dot { box-shadow: 0 0 0 4px rgba(139,92,246,0.3); }
+    .hito-content {
+      flex: 1;
+      padding-left: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
     }
     .hito-content strong {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #E6EDF3;
-    }
-    .hito.destacado .hito-content strong {
-      color: #C4B5FD;
-    }
-    .hito.destacado {
-      background: rgba(139,92,246,0.04);
-      border-radius: 8px;
-      padding-left: 0.5rem;
-      margin-left: -0.5rem;
-      border-left: 2px solid rgba(139,92,246,0.3);
-    }
-    .hito-content span {
       font-size: 0.8125rem;
-      color: #8B949E;
-      line-height: 1.4;
+      font-weight: 600;
+      color: #C9D1D9;
+      line-height: 1.3;
     }
+    .hito.destacado .hito-content strong { color: #E6EDF3; }
+    .hito-content span {
+      font-size: 0.75rem;
+      color: #8B949E;
+      line-height: 1.5;
+    }
+    .hito.destacado .hito-content span { color: #C9D1D9; }
   </style>
 </head>
 <body>
@@ -227,6 +230,7 @@ export class AngularTimelineComponent {
     <div class="timeline">
       <div class="hito">
         <div class="hito-anio">2010</div>
+        <div class="hito-track"><div class="dot"></div></div>
         <div class="hito-content">
           <strong>AngularJS (1.x)</strong>
           <span>El framework original — two-way binding revolucionario</span>
@@ -234,6 +238,7 @@ export class AngularTimelineComponent {
       </div>
       <div class="hito">
         <div class="hito-anio">2016</div>
+        <div class="hito-track"><div class="dot"></div></div>
         <div class="hito-content">
           <strong>Angular 2</strong>
           <span>Reescritura completa en TypeScript — componentes y DI</span>
@@ -241,6 +246,7 @@ export class AngularTimelineComponent {
       </div>
       <div class="hito">
         <div class="hito-anio">2022</div>
+        <div class="hito-track"><div class="dot"></div></div>
         <div class="hito-content">
           <strong>Angular 14</strong>
           <span>Standalone components — adiós a NgModules obligatorios</span>
@@ -248,6 +254,7 @@ export class AngularTimelineComponent {
       </div>
       <div class="hito destacado">
         <div class="hito-anio">2023</div>
+        <div class="hito-track"><div class="dot"></div></div>
         <div class="hito-content">
           <strong>Angular 16</strong>
           <span>Signals — nueva primitiva reactiva nativa</span>
@@ -255,6 +262,7 @@ export class AngularTimelineComponent {
       </div>
       <div class="hito destacado">
         <div class="hito-anio">2024</div>
+        <div class="hito-track"><div class="dot"></div></div>
         <div class="hito-content">
           <strong>Angular 19</strong>
           <span>Zoneless, signal inputs/outputs, incremental hydration</span>
@@ -262,6 +270,7 @@ export class AngularTimelineComponent {
       </div>
       <div class="hito destacado">
         <div class="hito-anio">2025</div>
+        <div class="hito-track"><div class="dot"></div></div>
         <div class="hito-content">
           <strong>Angular 20</strong>
           <span>Signals estables, linkedSignal, resource API</span>

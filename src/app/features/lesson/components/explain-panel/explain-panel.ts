@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   SecurityContext,
   computed,
+  effect,
   inject,
   input,
   output,
@@ -547,9 +549,21 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
 export class ExplainPanelComponent {
   private readonly router = inject(Router);
   private readonly progressService = inject(LessonProgressService);
+  private readonly host = inject(ElementRef<HTMLElement>);
   private readonly sanitizer = inject(DomSanitizer);
 
   readonly lesson = input<Lesson | null>(null);
+
+  constructor() {
+    effect(() => {
+      if (this.lesson()) {
+        setTimeout(() => {
+          const content = this.host.nativeElement.querySelector('.narrative-content') as HTMLElement | null;
+          if (content) content.scrollTop = 0;
+        }, 0);
+      }
+    });
+  }
   readonly lessonCompleted = output<string>();
 
   readonly checkpointSelected = signal<number | null>(null);

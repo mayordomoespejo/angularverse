@@ -11,7 +11,7 @@ An interactive Angular 19 learning platform with a read-only code viewer, an AI 
 | Framework | Angular 19 |
 | State | Signals (`signal`, `computed`, `effect`) |
 | Change detection | OnPush + Zoneless-ready |
-| AI tutor | OpenRouter API |
+| AI tutor | Groq API |
 | Auth | Supabase Auth (OTP + Google OAuth) |
 | Persistence | Supabase (user_progress, chat_history, RLS) |
 | Routing | Angular Router (standalone, lazy) |
@@ -24,7 +24,7 @@ An interactive Angular 19 learning platform with a read-only code viewer, an AI 
 ## Features
 
 - Read-only code viewer — observe real Angular code per lesson without editing
-- AI tutor sidebar (Ngbot) powered by OpenRouter for contextual Q&A
+- AI tutor sidebar (Ngbot) powered by Groq for contextual Q&A
 - Lesson explain panel with narrative blocks: text, tips, warnings, and checkpoints
 - Iframe-based preview panel showing what each Angular concept renders
 - Lesson timeline bar tracking progress across modules
@@ -61,7 +61,7 @@ Set these in `src/environments/environment.ts`:
 
 | Variable | Description |
 |----------|-------------|
-| `openRouterApiKey` | API key from openrouter.ai |
+| `groqApiKey` | API key from console.groq.com (free, no billing required) |
 | `supabaseUrl` | Supabase project URL |
 | `supabaseAnonKey` | Supabase anon key (Settings → API) |
 

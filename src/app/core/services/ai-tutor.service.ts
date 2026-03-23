@@ -4,8 +4,12 @@ import { environment } from '../../../environments/environment';
 import type { ChatMessage } from '../models/chat-message.model';
 import type { UserLevel } from '../models/user-profile.model';
 
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
 const MODELS = [
-  'openrouter/free',
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'gemma2-9b-it',
 ];
 
 export interface LessonContext {
@@ -19,7 +23,7 @@ export interface LessonContext {
   aiContext: string;
 }
 
-interface OpenRouterMessage {
+interface ChatApiMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
@@ -66,7 +70,7 @@ ${context.aiContext}`;
   streamResponse(userMessage: string, context: LessonContext): Observable<string> {
     return new Observable<string>(subscriber => {
       const history = context.chatHistory.slice(-10);
-      const messages: OpenRouterMessage[] = [
+      const messages: ChatApiMessage[] = [
         { role: 'system', content: this.buildSystemPrompt(context) },
         ...history.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),
         { role: 'user', content: userMessage },
@@ -77,7 +81,7 @@ ${context.aiContext}`;
   }
 
   private fetchStream(
-    messages: OpenRouterMessage[],
+    messages: ChatApiMessage[],
     subscriber: { next: (v: string) => void; error: (e: unknown) => void; complete: () => void },
     attempt: number
   ): void {
@@ -88,13 +92,11 @@ ${context.aiContext}`;
 
     const model = MODELS[(this.currentModelIndex + attempt) % MODELS.length];
 
-    fetch(environment.openRouterBaseUrl, {
+    fetch(GROQ_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.openRouterApiKey}`,
-        'HTTP-Referer': environment.appUrl,
-        'X-Title': 'AngularVerse',
+        'Authorization': `Bearer ${environment.groqApiKey}`,
       },
       body: JSON.stringify({
         model,

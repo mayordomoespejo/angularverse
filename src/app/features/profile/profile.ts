@@ -624,7 +624,7 @@ import type { UserLevel } from '../../core/models/user-profile.model';
       }
 
       .profile-card {
-        padding: 1.25rem 1rem 2rem;
+        padding: 2rem 1.25rem;
         gap: 1.25rem;
         border-radius: 0;
         border: none;

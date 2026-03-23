@@ -361,8 +361,25 @@ import type { Lesson } from '../../core/models/lesson.model';
 
     @media (max-width: 480px) {
       .logo-text { display: none; }
-      .lesson-topbar { padding: 0 0.75rem; height: 44px; }
-      .icon-btn { width: 28px; height: 28px; }
+
+      .lesson-topbar {
+        padding: 0 1rem;
+        height: 52px;
+      }
+
+      .topbar-right {
+        gap: 0.5rem;
+      }
+
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+      }
+
+      .user-avatar-btn {
+        width: 36px;
+        height: 36px;
+      }
     }
   `],
 })

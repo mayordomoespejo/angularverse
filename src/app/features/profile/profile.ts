@@ -620,13 +620,17 @@ import type { UserLevel } from '../../core/models/user-profile.model';
     @media (max-width: 480px) {
       .profile-shell {
         align-items: flex-start;
-        padding: 1rem 0.75rem 2rem;
+        padding: 0;
       }
 
       .profile-card {
-        padding: 1.25rem;
+        padding: 1.25rem 1rem 2rem;
         gap: 1.25rem;
-        border-radius: 12px;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        min-height: 100vh;
+        max-width: 100%;
       }
 
       .stats-grid {

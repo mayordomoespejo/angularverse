@@ -1,4 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import type { UserLevel, UserProfile } from '../models/user-profile.model';
 import type { ChatMessage } from '../models/chat-message.model';
 import { ALL_LESSONS } from '../../data/lessons';
@@ -28,13 +29,14 @@ export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
   private readonly auth = inject(AuthService);
 
-  private get firebaseUid(): string {
-    return this.auth.currentUser?.uid ?? '';
+  private get userId(): string {
+    return this.auth.currentUser?.id ?? '';
   }
 
   private readonly _profile = signal<UserProfile | null>(this.loadFromStorage());
 
   readonly profile = this._profile.asReadonly();
+  readonly profile$ = toObservable(this._profile);
   readonly isInitialized = computed(() => this._profile() !== null && this._profile()!.userName !== '');
 
   readonly xpTotal = computed(() => this._profile()?.xpTotal ?? 0);
@@ -56,13 +58,13 @@ export class LessonProgressService {
       }
     });
 
-    // React to Firebase Auth state — sync with Supabase once user is known
-    this.auth.user$.subscribe((firebaseUser) => {
-      if (!firebaseUser) return;
+    // React to Auth state — sync with Supabase once user is known
+    this.auth.user$.subscribe((user) => {
+      if (!user) return;
       // Ensure the row exists (ignoreDuplicates = no overwrite on returning users)
-      this.ensureSupabaseRow(firebaseUser.uid);
+      this.ensureSupabaseRow(user.id);
       // Hydrate profile from Supabase (merges remote data into local state)
-      this.hydrateFromSupabase(firebaseUser.uid);
+      this.hydrateFromSupabase(user.id);
     });
   }
 
@@ -84,7 +86,7 @@ export class LessonProgressService {
   private ensureSupabaseRow(uid: string): void {
     this.supabase.client
       .from('user_progress')
-      .upsert({ firebase_uid: uid }, { onConflict: 'firebase_uid', ignoreDuplicates: true })
+      .upsert({ user_id: uid }, { onConflict: 'user_id', ignoreDuplicates: true })
       .then(({ error }) => {
         if (error) console.warn('[Supabase] ensureSupabaseRow failed:', error.message);
       });
@@ -96,7 +98,7 @@ export class LessonProgressService {
       const { data, error } = await this.supabase.client
         .from('user_progress')
         .select('*')
-        .eq('firebase_uid', uid)
+        .eq('user_id', uid)
         .maybeSingle();
 
       if (error || !data) return;
@@ -118,6 +120,7 @@ export class LessonProgressService {
         },
         badges: local?.badges ?? [],
         createdAt: local?.createdAt ?? data['created_at'] ?? new Date().toISOString(),
+        photoUrl: data['photo_url'] ?? local?.photoUrl ?? undefined,
       };
 
       // Update signal — will trigger the effect which saves to localStorage
@@ -135,7 +138,7 @@ export class LessonProgressService {
       const { data, error } = await this.supabase.client
         .from('chat_history')
         .select('lesson_id, messages')
-        .eq('firebase_uid', uid);
+        .eq('user_id', uid);
 
       if (error || !data || data.length === 0) return;
 
@@ -152,14 +155,14 @@ export class LessonProgressService {
 
   /** Upsert progress row — fire-and-forget, never breaks UX. */
   private syncProfileToSupabase(profile: UserProfile): void {
-    const uid = this.firebaseUid;
+    const uid = this.userId;
     if (!uid) return;
 
     this.supabase.client
       .from('user_progress')
       .upsert(
         {
-          firebase_uid: uid,
+          user_id: uid,
           name: profile.userName,
           level: profile.level,
           xp_total: profile.xpTotal,
@@ -168,7 +171,7 @@ export class LessonProgressService {
           streak_last_date: profile.streak.lastActiveDate,
           photo_url: profile.photoUrl ?? null,
         },
-        { onConflict: 'firebase_uid' },
+        { onConflict: 'user_id' },
       )
       .then(({ error }) => {
         if (error) console.warn('[Supabase] syncProfileToSupabase failed:', error.message);
@@ -181,11 +184,11 @@ export class LessonProgressService {
       .from('chat_history')
       .upsert(
         {
-          firebase_uid: this.firebaseUid,
+          user_id: this.userId,
           lesson_id: lessonId,
           messages,
         },
-        { onConflict: 'firebase_uid,lesson_id' },
+        { onConflict: 'user_id,lesson_id' },
       )
       .then(({ error }) => {
         if (error) console.warn('[Supabase] syncChatHistoryToSupabase failed:', error.message);

@@ -26,6 +26,11 @@ export const routes: Routes = [
     canActivate: [authGuard, lessonUnlockGuard],
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./features/auth-callback/auth-callback').then(m => m.AuthCallbackComponent),
+  },
+  {
     path: '**',
     redirectTo: 'welcome',
   },

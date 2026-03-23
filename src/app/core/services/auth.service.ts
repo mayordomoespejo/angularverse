@@ -1,83 +1,119 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  Auth,
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  deleteUser,
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  updateProfile,
-  user,
-} from '@angular/fire/auth';
-import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
-import { Observable, from, catchError } from 'rxjs';
+import { BehaviorSubject, Observable, from, map } from 'rxjs';
+import type { Session, User } from '@supabase/supabase-js';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly auth = inject(Auth);
-  private readonly storage = inject(Storage);
+  private readonly supabase = inject(SupabaseService);
+  private readonly _session$ = new BehaviorSubject<Session | null>(null);
 
-  readonly user$ = user(this.auth);
+  readonly session$ = this._session$.asObservable();
+  readonly user$ = this._session$.pipe(map(s => s?.user ?? null));
 
-  // ── Smart auth: register → fallback login ─────────────────────────────
+  constructor() {
+    // Hydrate from persisted session immediately
+    this.supabase.client.auth.getSession().then(({ data }) => {
+      this._session$.next(data.session);
+    });
+    // Listen to future auth state changes
+    this.supabase.client.auth.onAuthStateChange((_event, session) => {
+      this._session$.next(session);
+    });
+  }
 
-  smartAuth(email: string, password: string): Observable<unknown> {
+  /** Step 1 of OTP flow: send 6-digit code to email */
+  sendOtp(email: string): Observable<void> {
     return from(
-      createUserWithEmailAndPassword(this.auth, email, password).then((cred) =>
-        sendEmailVerification(cred.user),
-      ),
-    ).pipe(
-      catchError((err: { code?: string }) => {
-        if (err.code === 'auth/email-already-in-use') {
-          return from(signInWithEmailAndPassword(this.auth, email, password));
-        }
-        throw err;
-      }),
+      this.supabase.client.auth.signInWithOtp({
+        email,
+        options: { shouldCreateUser: true },
+      }).then(({ error }) => { if (error) throw error; })
     );
   }
 
-  // ── Google OAuth ──────────────────────────────────────────────────────
-
-  loginWithGoogle() {
-    return from(signInWithPopup(this.auth, new GoogleAuthProvider()));
+  /** Step 2: verify the 6-digit code. Returns isNewUser flag. */
+  verifyOtp(email: string, token: string): Observable<{ isNewUser: boolean }> {
+    return from(
+      // Try 'email' first (returning user), fallback to 'signup' (new user confirmation)
+      this.supabase.client.auth.verifyOtp({ email, token, type: 'email' })
+        .then(async (result) => {
+          if (result.error) {
+            return this.supabase.client.auth.verifyOtp({ email, token, type: 'signup' });
+          }
+          return result;
+        })
+        .then(async ({ data, error }) => {
+          if (error) throw error;
+          const user = data.user!;
+          const { data: row } = await this.supabase.client
+            .from('user_progress')
+            .select('user_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          return { isNewUser: !row };
+        })
+    );
   }
 
-  // ── Profile updates ───────────────────────────────────────────────────
-
-  updateDisplayName(name: string) {
-    const u = this.auth.currentUser;
-    if (!u) return from(Promise.resolve());
-    return from(updateProfile(u, { displayName: name }));
+  /** Google OAuth — redirect flow (not popup) */
+  loginWithGoogle(): Observable<void> {
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    return from(
+      this.supabase.client.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      }).then(({ error }) => { if (error) throw error; })
+    );
   }
 
+  /** Update display name in user_metadata */
+  updateDisplayName(name: string): Observable<void> {
+    return from(
+      this.supabase.client.auth.updateUser({ data: { display_name: name } })
+        .then(({ error }) => { if (error) throw error; })
+    );
+  }
+
+  /** Upload profile photo to Supabase Storage. Returns public URL. */
   async uploadPhoto(file: File): Promise<string> {
-    const u = this.auth.currentUser;
-    if (!u) throw new Error('No authenticated user');
-
-    const storageRef = ref(this.storage, `profile-photos/${u.uid}`);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    await updateProfile(u, { photoURL: url });
-    return url;
+    const user = this.currentUser;
+    if (!user) throw new Error('Not authenticated');
+    const ext = file.name.split('.').pop();
+    const path = `${user.id}/avatar.${ext}`;
+    const { error: uploadError } = await this.supabase.client.storage
+      .from('profile-photos')
+      .upload(path, file, { upsert: true });
+    if (uploadError) throw uploadError;
+    const { data } = this.supabase.client.storage
+      .from('profile-photos')
+      .getPublicUrl(path);
+    return data.publicUrl;
   }
 
-  // ── Account deletion ──────────────────────────────────────────────────
-
-  deleteAccount() {
-    const u = this.auth.currentUser;
-    if (!u) return from(Promise.resolve());
-    return from(deleteUser(u));
+  /** Delete account via Supabase Edge Function, then clear local session */
+  deleteAccount(): Observable<void> {
+    return from(
+      this.supabase.client.functions.invoke('delete-account')
+        .then(({ error }) => { if (error) throw error; })
+        .then(() => { this._session$.next(null); })
+    );
   }
 
-  // ── Session ───────────────────────────────────────────────────────────
-
-  logout() {
-    return from(signOut(this.auth));
+  /** Sign out */
+  logout(): Observable<void> {
+    return from(
+      this.supabase.client.auth.signOut()
+        .then(({ error }) => { if (error) throw error; })
+    );
   }
 
-  get currentUser() {
-    return this.auth.currentUser;
+  get currentUser(): User | null {
+    return this._session$.value?.user ?? null;
+  }
+
+  /** Equivalent of Firebase authStateReady() — resolves when session is known */
+  authReady(): Promise<Session | null> {
+    return this.supabase.client.auth.getSession().then(({ data }) => data.session);
   }
 }

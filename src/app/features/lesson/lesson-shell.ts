@@ -215,7 +215,6 @@ import type { Lesson } from '../../core/models/lesson.model';
       overflow: hidden;
       transition: filter 150ms;
       padding: 0;
-      margin-left: 0.25rem;
 
       &:hover { filter: brightness(1.2); }
     }
@@ -228,6 +227,7 @@ import type { Lesson } from '../../core/models/lesson.model';
 
     .user-avatar-initial {
       line-height: 1;
+      padding-top: 1px;
     }
 
     .icon-btn {

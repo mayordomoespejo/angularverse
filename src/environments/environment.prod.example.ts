@@ -7,13 +7,4 @@ export const environment = {
   openRouterBaseUrl: 'https://openrouter.ai/api/v1/chat/completions',
   openRouterApiKey: 'YOUR_OPENROUTER_API_KEY',
   appUrl: 'https://your-production-domain.com',
-  // Firebase — required for Auth (AV-003)
-  firebase: {
-    apiKey: 'YOUR_FIREBASE_API_KEY',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.firebasestorage.app',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: 'YOUR_FIREBASE_APP_ID',
-  },
 };

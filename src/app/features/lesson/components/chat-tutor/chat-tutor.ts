@@ -100,7 +100,11 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
               }
               @if (msg.role === 'user') {
                 <div class="msg-user-avatar">
-                  <span>{{ userInitial() }}</span>
+                  @if (userPhoto()) {
+                    <img [src]="userPhoto()" alt="Tu avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+                  } @else {
+                    <span>{{ userInitial() }}</span>
+                  }
                 </div>
               }
             </div>
@@ -546,6 +550,7 @@ export class ChatTutorComponent {
 
   readonly userName = computed(() => this.progressService.userName());
   readonly userInitial = computed(() => this.userName().charAt(0).toUpperCase() || 'U');
+  readonly userPhoto = this.progressService.photoUrl;
   readonly lessonTitle = computed(() => this.lesson()?.title ?? 'Angular');
   readonly suggestedQuestions = computed(() => this.lesson()?.suggestedQuestions?.slice(0, 3) ?? []);
   readonly canSend = computed(() => this.inputValue().trim().length > 0 && !this.isStreaming());

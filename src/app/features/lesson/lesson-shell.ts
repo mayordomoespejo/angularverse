@@ -80,6 +80,14 @@ import type { Lesson } from '../../core/models/lesson.model';
               <circle cx="10.5" cy="7" r="1" fill="currentColor"/>
             </svg>
           </button>
+
+          <button class="user-avatar-btn" (click)="navigateToProfile()" title="Mi perfil">
+            @if (photoUrl()) {
+              <img class="user-avatar-img" [src]="photoUrl()" alt="Perfil" />
+            } @else {
+              <span class="user-avatar-initial">{{ userInitial() }}</span>
+            }
+          </button>
         </div>
       </header>
 
@@ -189,6 +197,37 @@ import type { Lesson } from '../../core/models/lesson.model';
       display: flex;
       align-items: center;
       gap: 0.375rem;
+    }
+
+    .user-avatar-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent-primary);
+      background: rgba(124, 58, 237, 0.15);
+      color: var(--accent-primary);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: filter 150ms;
+      padding: 0;
+      margin-left: 0.25rem;
+
+      &:hover { filter: brightness(1.2); }
+    }
+
+    .user-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-avatar-initial {
+      line-height: 1;
     }
 
     .icon-btn {
@@ -331,6 +370,11 @@ export class LessonShellComponent {
   private readonly progressService = inject(LessonProgressService);
   private readonly router = inject(Router);
 
+  readonly photoUrl = this.progressService.photoUrl;
+  readonly userInitial = computed(() =>
+    this.progressService.userName().charAt(0).toUpperCase() || 'U'
+  );
+
   readonly id = input<string>(''); // debe coincidir con el param :id de la ruta
 
   readonly lesson = computed((): Lesson | null => {
@@ -385,5 +429,9 @@ export class LessonShellComponent {
 
   navigateHome(): void {
     void this.router.navigate(['/welcome']);
+  }
+
+  navigateToProfile(): void {
+    void this.router.navigate(['/profile']);
   }
 }

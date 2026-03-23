@@ -616,6 +616,39 @@ import type { UserLevel } from '../../core/models/user-profile.model';
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    @media (max-width: 480px) {
+      .profile-shell {
+        align-items: flex-start;
+        padding: 1rem 0.75rem 2rem;
+      }
+
+      .profile-card {
+        padding: 1.25rem;
+        gap: 1.25rem;
+        border-radius: 12px;
+      }
+
+      .stats-grid {
+        gap: 0.5rem;
+      }
+
+      .stat {
+        padding: 0.75rem 0.5rem;
+      }
+
+      .stat-emoji { font-size: 1rem; }
+      .stat-value { font-size: 1.125rem; }
+      .stat-label { font-size: 0.625rem; }
+
+      .input-row {
+        flex-direction: column;
+      }
+
+      .btn-save {
+        width: 100%;
+      }
+    }
   `],
 })
 export class ProfileComponent {

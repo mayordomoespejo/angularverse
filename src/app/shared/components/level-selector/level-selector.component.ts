@@ -71,6 +71,22 @@ export const LEVELS: Array<{ id: UserLevel; name: string; icon: string; descript
       color: var(--text-muted);
       line-height: 1.3;
     }
+
+    @media (max-width: 480px) {
+      .level-cards { gap: 0.5rem; }
+
+      .level-card {
+        padding: 0.75rem 0.375rem;
+        gap: 0.25rem;
+        border-radius: 8px;
+      }
+
+      .level-icon { font-size: 1.25rem; }
+
+      .level-name { font-size: 0.6875rem; }
+
+      .level-desc { display: none; }
+    }
   `],
 })
 export class LevelSelectorComponent {

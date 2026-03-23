@@ -101,7 +101,7 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
               @if (msg.role === 'user') {
                 <div class="msg-user-avatar">
                   @if (userPhoto()) {
-                    <img [src]="userPhoto()" alt="Tu avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+                    <img [src]="userPhoto()" alt="Tu avatar" class="msg-user-photo" />
                   } @else {
                     <span>{{ userInitial() }}</span>
                   }
@@ -371,6 +371,14 @@ import { NgbotAvatarComponent } from '../../../../shared/components/ngbot-avatar
       font-weight: 700;
       color: white;
       flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .msg-user-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
     }
 
     .msg-bubble {

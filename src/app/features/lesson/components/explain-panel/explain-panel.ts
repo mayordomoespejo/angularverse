@@ -1,12 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  SecurityContext,
   computed,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import type { Lesson } from '../../../../core/models/lesson.model';
 import { LessonProgressService } from '../../../../core/services/lesson-progress.service';
@@ -545,6 +547,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
 export class ExplainPanelComponent {
   private readonly router = inject(Router);
   private readonly progressService = inject(LessonProgressService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   readonly lesson = input<Lesson | null>(null);
   readonly lessonCompleted = output<string>();
@@ -564,9 +567,10 @@ export class ExplainPanelComponent {
   }
 
   renderText(content: string): string {
-    return content
+    const html = content
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/`(.+?)`/g, '<code>$1</code>');
+    return this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '';
   }
 
   completeLesson(): void {

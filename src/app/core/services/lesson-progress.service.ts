@@ -1,5 +1,5 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { DestroyRef, Injectable, computed, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import type { UserLevel, UserProfile } from '../models/user-profile.model';
 import type { ChatMessage } from '../models/chat-message.model';
 import { ALL_LESSONS } from '../../data/lessons';
@@ -28,6 +28,7 @@ function createDefaultProfile(): UserProfile {
 export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
   private readonly auth = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private get userId(): string {
     return this.auth.currentUser?.id ?? '';
@@ -59,7 +60,7 @@ export class LessonProgressService {
     });
 
     // React to Auth state — sync with Supabase once user is known
-    this.auth.user$.subscribe((user) => {
+    this.auth.user$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((user) => {
       if (!user) return;
       // Ensure the row exists (ignoreDuplicates = no overwrite on returning users)
       this.ensureSupabaseRow(user.id);
@@ -253,7 +254,7 @@ export class LessonProgressService {
 
     const nextLessonId = lesson?.nextLesson ?? profile.currentLessonId;
 
-    this._profile.set({
+    const updated: UserProfile = {
       ...profile,
       completedLessons: completed,
       xpTotal: profile.completedLessons.includes(lessonId)
@@ -261,7 +262,9 @@ export class LessonProgressService {
         : profile.xpTotal + xpGained,
       currentLessonId: nextLessonId ?? profile.currentLessonId,
       streak: newStreak,
-    });
+    };
+    this._profile.set(updated);
+    this.syncProfileToSupabase(updated);
   }
 
   getCurrentLesson(): Lesson | null {

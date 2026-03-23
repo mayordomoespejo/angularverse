@@ -939,7 +939,7 @@ export class WelcomeComponent {
   }
 
   private generateParticles(): string[] {
-    return Array.from({ length: 30 }, (_, i) => {
+    return Array.from({ length: 30 }, () => {
       const x = Math.random() * 100;
       const duration = 6 + Math.random() * 8;
       const delay = Math.random() * -10;

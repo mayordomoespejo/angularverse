@@ -25,10 +25,10 @@ import { DomSanitizer } from '@angular/platform-browser';
         @if (previewHtml()) {
           <iframe
             [srcdoc]="safeHtml()"
+            class="preview-iframe"
             width="100%"
             height="100%"
             frameborder="0"
-            style="border:none;display:block"
           ></iframe>
         } @else {
           <div class="idle-state">
@@ -158,6 +158,11 @@ import { DomSanitizer } from '@angular/platform-browser';
       font-family: var(--font-mono);
       font-size: 0.875em;
       color: var(--accent-code);
+    }
+
+    .preview-iframe {
+      border: none;
+      display: block;
     }
 
     // Footer

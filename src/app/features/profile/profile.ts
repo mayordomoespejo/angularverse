@@ -548,13 +548,11 @@ import type { UserLevel } from '../../core/models/user-profile.model';
       border: 1px solid rgba(239, 68, 68, 0.3);
       border-radius: 12px;
       padding: 2rem;
-      padding-bottom: 3rem;
       max-width: 400px;
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      position: relative;
     }
 
     .modal-title {
@@ -572,14 +570,9 @@ import type { UserLevel } from '../../core/models/user-profile.model';
     }
 
     .modal-error {
-      position: absolute;
-      bottom: 0.75rem;
-      left: 2rem;
-      right: 2rem;
       font-size: 0.8125rem;
       color: #f87171;
       text-align: center;
-      pointer-events: none;
       animation: fadeInUp 0.2s ease;
     }
 

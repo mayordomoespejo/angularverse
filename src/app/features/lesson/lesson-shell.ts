@@ -423,10 +423,6 @@ export class LessonShellComponent {
     // Handled inside ExplainPanelComponent
   }
 
-  onCodeChange(code: string): void {
-    this.currentCode.set(code);
-  }
-
   navigateHome(): void {
     void this.router.navigate(['/welcome']);
   }

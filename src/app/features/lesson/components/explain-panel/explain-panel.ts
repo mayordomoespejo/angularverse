@@ -7,7 +7,6 @@ import {
   effect,
   inject,
   input,
-  output,
   signal,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -557,14 +556,13 @@ export class ExplainPanelComponent {
   constructor() {
     effect(() => {
       if (this.lesson()) {
-        setTimeout(() => {
+        queueMicrotask(() => {
           const content = this.host.nativeElement.querySelector('.narrative-content') as HTMLElement | null;
           if (content) content.scrollTop = 0;
-        }, 0);
+        });
       }
     });
   }
-  readonly lessonCompleted = output<string>();
 
   readonly checkpointSelected = signal<number | null>(null);
 
@@ -591,7 +589,6 @@ export class ExplainPanelComponent {
     const l = this.lesson();
     if (!l) return;
     this.progressService.completeLesson(l.id);
-    this.lessonCompleted.emit(l.id);
   }
 
   navigateNext(): void {

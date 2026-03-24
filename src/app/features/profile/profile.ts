@@ -15,6 +15,8 @@ import { LessonProgressService } from '../../core/services/lesson-progress.servi
 import { LevelSelectorComponent } from '../../shared/components/level-selector/level-selector.component';
 import type { UserLevel } from '../../core/models/user-profile.model';
 
+const SUCCESS_MESSAGE_DISPLAY_MS = 2500;
+
 @Component({
   selector: 'app-profile',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -739,7 +741,7 @@ export class ProfileComponent {
     this.selectedLevel.set(level);
     this.progressService.updateLevel(level);
     this.levelSuccess.set(true);
-    timer(2500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.levelSuccess.set(false));
+    timer(SUCCESS_MESSAGE_DISPLAY_MS).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.levelSuccess.set(false));
   }
 
   // ── Username ──────────────────────────────────────────────────────────
@@ -754,7 +756,7 @@ export class ProfileComponent {
         this.progressService.updateUserName(name);
         this.nameSuccess.set(true);
         this.nameSaving.set(false);
-        timer(2500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.nameSuccess.set(false));
+        timer(SUCCESS_MESSAGE_DISPLAY_MS).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.nameSuccess.set(false));
       },
       error: () => this.nameSaving.set(false),
     });

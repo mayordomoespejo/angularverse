@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, from, take } from 'rxjs';
+import { filter, from, take, timer } from 'rxjs';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LevelSelectorComponent } from '../../shared/components/level-selector/level-selector.component';
@@ -18,6 +18,11 @@ import type { UserLevel } from '../../core/models/user-profile.model';
 
 const FIRST_LESSON_ID = 'L0.1';
 const INTRO_LESSON_ID = 'L1.1';
+
+const TYPEWRITER_INTERVAL_MS = 60;
+const CINEMATIC_TRANSITION_DELAY_MS = 800;
+const RESEND_COOLDOWN_TICK_MS = 1000;
+const RESEND_SUCCESS_DISPLAY_MS = 3000;
 
 type Act = 0 | 1 | 2 | 3;
 type Act3Step = 'email' | 'otp' | 'profile';
@@ -785,7 +790,7 @@ export class WelcomeComponent {
       } else {
         this.resendCooldown.set(remaining);
       }
-    }, 1000);
+    }, RESEND_COOLDOWN_TICK_MS);
   }
 
   private startCinematic(): void {
@@ -798,9 +803,9 @@ export class WelcomeComponent {
         i++;
       } else {
         clearInterval(this.typewriterInterval);
-        setTimeout(() => this.currentAct.set(2), 800);
+        timer(CINEMATIC_TRANSITION_DELAY_MS).pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe(() => this.currentAct.set(2));
       }
-    }, 60);
+    }, TYPEWRITER_INTERVAL_MS);
   }
 
   goToAct3(): void {
@@ -812,7 +817,7 @@ export class WelcomeComponent {
   submitEmail(): void {
     this.authError.set('');
     this.authLoading.set(true);
-    this.authService.sendOtp(this.email()).subscribe({
+    this.authService.sendOtp(this.email()).pipe(take(1)).subscribe({
       next: () => {
         this.authLoading.set(false);
         this.act3Step.set('otp');
@@ -833,7 +838,7 @@ export class WelcomeComponent {
   submitOtp(): void {
     this.authError.set('');
     this.authLoading.set(true);
-    this.authService.verifyOtp(this.email(), this.otpCode()).subscribe({
+    this.authService.verifyOtp(this.email(), this.otpCode()).pipe(take(1)).subscribe({
       next: ({ isNewUser }) => {
         this.authLoading.set(false);
         if (!isNewUser) {
@@ -889,12 +894,12 @@ export class WelcomeComponent {
   resendOtp(): void {
     this.resendLoading.set(true);
     this.resendSuccess.set(false);
-    this.authService.sendOtp(this.email()).subscribe({
+    this.authService.sendOtp(this.email()).pipe(take(1)).subscribe({
       next: () => {
         this.resendLoading.set(false);
         this.resendSuccess.set(true);
         this.startResendCooldown();
-        setTimeout(() => this.resendSuccess.set(false), 3000);
+        timer(RESEND_SUCCESS_DISPLAY_MS).pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe(() => this.resendSuccess.set(false));
       },
       error: () => { this.resendLoading.set(false); },
     });
@@ -903,7 +908,7 @@ export class WelcomeComponent {
   loginWithGoogle(): void {
     this.authError.set('');
     this.authLoading.set(true);
-    this.authService.loginWithGoogle().subscribe({
+    this.authService.loginWithGoogle().pipe(take(1)).subscribe({
       error: (err: { message?: string }) => {
         this.authError.set(err.message ?? 'Error con Google.');
         this.authLoading.set(false);

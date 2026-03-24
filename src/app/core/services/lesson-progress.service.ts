@@ -89,7 +89,7 @@ export class LessonProgressService {
       .from('user_progress')
       .upsert({ user_id: uid }, { onConflict: 'user_id', ignoreDuplicates: true })
       .then(({ error }) => {
-        if (error) console.warn('[Supabase] ensureSupabaseRow failed:', error.message);
+        if (error) return;
       });
   }
 
@@ -129,8 +129,8 @@ export class LessonProgressService {
 
       // Also hydrate chat history from Supabase
       await this.hydrateChatHistoryFromSupabase(uid, merged);
-    } catch (err) {
-      console.warn('[Supabase] hydrateFromSupabase failed:', err);
+    } catch {
+      return;
     }
   }
 
@@ -149,8 +149,8 @@ export class LessonProgressService {
       }
 
       this._profile.set({ ...profile, chatHistoryByLesson });
-    } catch (err) {
-      console.warn('[Supabase] hydrateChatHistoryFromSupabase failed:', err);
+    } catch {
+      return;
     }
   }
 
@@ -175,7 +175,7 @@ export class LessonProgressService {
         { onConflict: 'user_id' },
       )
       .then(({ error }) => {
-        if (error) console.warn('[Supabase] syncProfileToSupabase failed:', error.message);
+        if (error) return;
       });
   }
 
@@ -192,7 +192,7 @@ export class LessonProgressService {
         { onConflict: 'user_id,lesson_id' },
       )
       .then(({ error }) => {
-        if (error) console.warn('[Supabase] syncChatHistoryToSupabase failed:', error.message);
+        if (error) return;
       });
   }
 

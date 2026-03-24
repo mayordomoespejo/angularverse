@@ -7,7 +7,6 @@ import {
   effect,
   inject,
   input,
-  output,
   signal,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -91,7 +90,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
                         [class.correct]="checkpointSelected() === $index && $index === block.correct"
                         [class.wrong]="checkpointSelected() === $index && $index !== block.correct"
                         [class.disabled]="checkpointSelected() !== null"
-                        (click)="selectCheckpoint($index, block.correct)"
+                        (click)="selectCheckpoint($index)"
                       >
                         <span class="option-letter">{{ optionLetters[$index] }}</span>
                         <span>{{ option }}</span>
@@ -557,14 +556,13 @@ export class ExplainPanelComponent {
   constructor() {
     effect(() => {
       if (this.lesson()) {
-        setTimeout(() => {
+        queueMicrotask(() => {
           const content = this.host.nativeElement.querySelector('.narrative-content') as HTMLElement | null;
           if (content) content.scrollTop = 0;
-        }, 0);
+        });
       }
     });
   }
-  readonly lessonCompleted = output<string>();
 
   readonly checkpointSelected = signal<number | null>(null);
 
@@ -575,7 +573,7 @@ export class ExplainPanelComponent {
     return l ? this.progressService.isLessonCompleted(l.id) : false;
   });
 
-  selectCheckpoint(index: number, _correct: number): void {
+  selectCheckpoint(index: number): void {
     if (this.checkpointSelected() !== null) return;
     this.checkpointSelected.set(index);
   }
@@ -591,7 +589,6 @@ export class ExplainPanelComponent {
     const l = this.lesson();
     if (!l) return;
     this.progressService.completeLesson(l.id);
-    this.lessonCompleted.emit(l.id);
   }
 
   navigateNext(): void {

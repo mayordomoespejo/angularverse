@@ -1,16 +1,21 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
 import { LevelSelectorComponent } from '../../shared/components/level-selector/level-selector.component';
 import type { UserLevel } from '../../core/models/user-profile.model';
+
+const SUCCESS_MESSAGE_DISPLAY_MS = 2500;
 
 @Component({
   selector: 'app-profile',
@@ -76,17 +81,17 @@ import type { UserLevel } from '../../core/models/user-profile.model';
           <h2 class="section-title">Tu progreso</h2>
           <div class="stats-grid">
             <div class="stat">
-              <span class="stat-emoji">⚡</span>
+              <span class="stat-emoji" aria-hidden="true">⚡</span>
               <span class="stat-value xp-value">{{ xp() }}</span>
               <span class="stat-label">XP total</span>
             </div>
             <div class="stat">
-              <span class="stat-emoji">📚</span>
+              <span class="stat-emoji" aria-hidden="true">📚</span>
               <span class="stat-value">{{ completed() }}</span>
               <span class="stat-label">Lecciones</span>
             </div>
             <div class="stat">
-              <span class="stat-emoji">🔥</span>
+              <span class="stat-emoji" aria-hidden="true">🔥</span>
               <span class="stat-value">{{ streak() }}</span>
               <span class="stat-label">Días seguidos</span>
             </div>
@@ -617,6 +622,11 @@ import type { UserLevel } from '../../core/models/user-profile.model';
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .particle { animation: none; opacity: 0; }
+      .nebula { animation: none; }
+    }
+
     @media (max-width: 480px) {
       .profile-shell {
         align-items: flex-start;
@@ -659,6 +669,7 @@ export class ProfileComponent {
   private readonly authService = inject(AuthService);
   private readonly progressService = inject(LessonProgressService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly photoUrl = this.progressService.photoUrl;
   readonly currentName = this.progressService.userName;
@@ -678,7 +689,8 @@ export class ProfileComponent {
   readonly deleteError = signal('');
   readonly selectedLevel = signal(this.progressService.userLevel());
 
-  readonly particles = this.generateParticles();
+  readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  readonly particles = this.reducedMotion ? [] : this.generateParticles();
 
   newName = this.currentName();
 
@@ -729,7 +741,7 @@ export class ProfileComponent {
     this.selectedLevel.set(level);
     this.progressService.updateLevel(level);
     this.levelSuccess.set(true);
-    setTimeout(() => this.levelSuccess.set(false), 2500);
+    timer(SUCCESS_MESSAGE_DISPLAY_MS).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.levelSuccess.set(false));
   }
 
   // ── Username ──────────────────────────────────────────────────────────
@@ -739,12 +751,12 @@ export class ProfileComponent {
     if (!name || name === this.currentName()) return;
 
     this.nameSaving.set(true);
-    this.authService.updateDisplayName(name).subscribe({
+    this.authService.updateDisplayName(name).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.progressService.updateUserName(name);
         this.nameSuccess.set(true);
         this.nameSaving.set(false);
-        setTimeout(() => this.nameSuccess.set(false), 2500);
+        timer(SUCCESS_MESSAGE_DISPLAY_MS).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.nameSuccess.set(false));
       },
       error: () => this.nameSaving.set(false),
     });
@@ -753,7 +765,7 @@ export class ProfileComponent {
   // ── Logout ────────────────────────────────────────────────────────────
 
   logout(): void {
-    this.authService.logout().subscribe({
+    this.authService.logout().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.progressService.resetProfile();
         void this.router.navigate(['/welcome']);
@@ -767,7 +779,7 @@ export class ProfileComponent {
     this.deleteLoading.set(true);
     this.deleteError.set('');
 
-    this.authService.deleteAccount().subscribe({
+    this.authService.deleteAccount().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.progressService.resetProfile();
         void this.router.navigate(['/welcome']);

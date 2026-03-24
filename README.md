@@ -91,3 +91,9 @@ Set these in `src/environments/environment.ts`:
 |---------|-------------|
 | `npm start` | Start dev server |
 | `npm run build` | Production build |
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE)

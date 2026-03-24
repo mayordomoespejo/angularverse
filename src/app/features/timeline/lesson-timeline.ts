@@ -60,14 +60,14 @@ interface ModuleGroup {
       </div>
       <div class="timeline-stats">
         <span class="stat xp">
-          <span class="stat-icon">⚡</span>
+          <span class="stat-icon" aria-hidden="true">⚡</span>
           <span class="stat-value" [class.animating]="showDelta()">{{ displayXp() }} XP</span>
           @if (showDelta()) {
             <span class="xp-delta">+{{ xpDelta() }}</span>
           }
         </span>
         <span class="stat streak">
-          <span class="stat-icon">🔥</span>
+          <span class="stat-icon" aria-hidden="true">🔥</span>
           <span class="stat-value">{{ streak() }}</span>
         </span>
       </div>

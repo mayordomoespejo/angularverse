@@ -9,12 +9,20 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, from, take } from 'rxjs';
+import { filter, from, take, timer } from 'rxjs';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LevelSelectorComponent } from '../../shared/components/level-selector/level-selector.component';
 import { LogoIconComponent } from '../../shared/components/logo-icon/logo-icon';
 import type { UserLevel } from '../../core/models/user-profile.model';
+
+const FIRST_LESSON_ID = 'L0.1';
+const INTRO_LESSON_ID = 'L1.1';
+
+const TYPEWRITER_INTERVAL_MS = 60;
+const CINEMATIC_TRANSITION_DELAY_MS = 800;
+const RESEND_COOLDOWN_TICK_MS = 1000;
+const RESEND_SUCCESS_DISPLAY_MS = 3000;
 
 type Act = 0 | 1 | 2 | 3;
 type Act3Step = 'email' | 'otp' | 'profile';
@@ -59,9 +67,9 @@ type Act3Step = 'email' | 'otp' | 'profile';
               </h1>
               <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código en contexto. Con un tutor que te entiende.</p>
               <div class="feature-pills">
-                <span class="pill">🤖 AI Tutor Ngbot</span>
-                <span class="pill">🚀 De cero a producción</span>
-                <span class="pill">🏆 Sistema de XP</span>
+                <span class="pill"><span aria-hidden="true">🤖</span> AI Tutor Ngbot</span>
+                <span class="pill"><span aria-hidden="true">🚀</span> De cero a producción</span>
+                <span class="pill"><span aria-hidden="true">🏆</span> Sistema de XP</span>
               </div>
             </div>
             <button class="btn-skip" (click)="goToAct3()">Comenzar →</button>
@@ -633,6 +641,18 @@ type Act3Step = 'email' | 'otp' | 'profile';
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .particle { animation: none; opacity: 0; }
+      .nebula { animation: none; }
+      .angular-logo-nebula { animation: none; }
+      .brand-ngbot-icon { animation: none; }
+      .logo-svg .hex-path { animation: none; stroke-dashoffset: 0; }
+      .cursor { animation: none; opacity: 1; }
+      .btn-skip { animation: none; }
+      .btn-start.ready { animation: none; }
+      .act { animation: none; opacity: 1; }
+    }
+
     .otp-boxes {
       display: flex;
       gap: 0.5rem;
@@ -715,7 +735,8 @@ export class WelcomeComponent {
   readonly typedText = signal('');
   readonly isReady = computed(() => this.userName().trim().length >= 2);
 
-  readonly particles = this.generateParticles();
+  readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  readonly particles = this.reducedMotion ? [] : this.generateParticles();
 
   private typewriterInterval?: ReturnType<typeof setInterval>;
   private cooldownInterval?: ReturnType<typeof setInterval>;
@@ -769,7 +790,7 @@ export class WelcomeComponent {
       } else {
         this.resendCooldown.set(remaining);
       }
-    }, 1000);
+    }, RESEND_COOLDOWN_TICK_MS);
   }
 
   private startCinematic(): void {
@@ -782,9 +803,9 @@ export class WelcomeComponent {
         i++;
       } else {
         clearInterval(this.typewriterInterval);
-        setTimeout(() => this.currentAct.set(2), 800);
+        timer(CINEMATIC_TRANSITION_DELAY_MS).pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe(() => this.currentAct.set(2));
       }
-    }, 60);
+    }, TYPEWRITER_INTERVAL_MS);
   }
 
   goToAct3(): void {
@@ -796,7 +817,7 @@ export class WelcomeComponent {
   submitEmail(): void {
     this.authError.set('');
     this.authLoading.set(true);
-    this.authService.sendOtp(this.email()).subscribe({
+    this.authService.sendOtp(this.email()).pipe(take(1)).subscribe({
       next: () => {
         this.authLoading.set(false);
         this.act3Step.set('otp');
@@ -817,7 +838,7 @@ export class WelcomeComponent {
   submitOtp(): void {
     this.authError.set('');
     this.authLoading.set(true);
-    this.authService.verifyOtp(this.email(), this.otpCode()).subscribe({
+    this.authService.verifyOtp(this.email(), this.otpCode()).pipe(take(1)).subscribe({
       next: ({ isNewUser }) => {
         this.authLoading.set(false);
         if (!isNewUser) {
@@ -873,12 +894,12 @@ export class WelcomeComponent {
   resendOtp(): void {
     this.resendLoading.set(true);
     this.resendSuccess.set(false);
-    this.authService.sendOtp(this.email()).subscribe({
+    this.authService.sendOtp(this.email()).pipe(take(1)).subscribe({
       next: () => {
         this.resendLoading.set(false);
         this.resendSuccess.set(true);
         this.startResendCooldown();
-        setTimeout(() => this.resendSuccess.set(false), 3000);
+        timer(RESEND_SUCCESS_DISPLAY_MS).pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe(() => this.resendSuccess.set(false));
       },
       error: () => { this.resendLoading.set(false); },
     });
@@ -887,7 +908,7 @@ export class WelcomeComponent {
   loginWithGoogle(): void {
     this.authError.set('');
     this.authLoading.set(true);
-    this.authService.loginWithGoogle().subscribe({
+    this.authService.loginWithGoogle().pipe(take(1)).subscribe({
       error: (err: { message?: string }) => {
         this.authError.set(err.message ?? 'Error con Google.');
         this.authLoading.set(false);
@@ -900,20 +921,20 @@ export class WelcomeComponent {
   submit(): void {
     if (!this.isReady()) return;
     this.lessonProgress.initUser(this.userName().trim(), this.selectedLevel());
-    void this.router.navigate(['/lesson', 'L0.1']);
+    void this.router.navigate(['/lesson', FIRST_LESSON_ID]);
   }
 
   skipToAdvanced(): void {
     const name = this.userName().trim() || 'Desarrollador';
     this.lessonProgress.initUser(name, 'developer');
-    void this.router.navigate(['/lesson', 'L1.1']);
+    void this.router.navigate(['/lesson', INTRO_LESSON_ID]);
   }
 
   // ── Utils ────────────────────────────────────────────────────────────────
 
   private navigateToLesson(): void {
     const currentId = this.lessonProgress.currentLessonId();
-    void this.router.navigate(['/lesson', currentId ?? 'L0.1']);
+    void this.router.navigate(['/lesson', currentId ?? FIRST_LESSON_ID]);
   }
 
   private prefillName(): void {

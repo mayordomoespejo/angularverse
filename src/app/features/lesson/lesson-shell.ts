@@ -46,9 +46,10 @@ import type { Lesson } from '../../core/models/lesson.model';
             [class.active]="isLessonFullscreen()"
             (click)="toggleLessonFullscreen()"
             [title]="isLessonFullscreen() ? 'Salir de vista lectura' : 'Vista lectura completa'"
+            [attr.aria-label]="isLessonFullscreen() ? 'Salir de vista lectura' : 'Vista lectura completa'"
           >
             <!-- Book/reading icon -->
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M2 3h5a1 1 0 011 1v9a1 1 0 01-1-1V4H2V3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
               <path d="M14 3H9a1 1 0 00-1 1v9a1 1 0 001-1V4h5V3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
             </svg>
@@ -58,6 +59,7 @@ import type { Lesson } from '../../core/models/lesson.model';
             [class.active]="isZenMode()"
             (click)="toggleZenMode()"
             [title]="isZenMode() ? 'Salir del modo Zen (Ctrl+Shift+Z)' : 'Modo Zen (Ctrl+Shift+Z)'"
+            [attr.aria-label]="isZenMode() ? 'Salir del modo Zen' : 'Activar modo Zen'"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M2 2h4M2 2v4M14 2h-4M14 2v4M2 14h4M2 14v-4M14 14h-4M14 14v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -115,7 +117,6 @@ import type { Lesson } from '../../core/models/lesson.model';
       <div class="panels-grid" [class.chat-open]="isChatOpen()" [attr.data-mobile-panel]="activeMobilePanel()">
         <app-explain-panel
           [lesson]="lesson()"
-          (lessonCompleted)="onLessonCompleted($event)"
         />
         <app-code-panel
           [lesson]="lesson()"
@@ -432,10 +433,6 @@ export class LessonShellComponent {
       event.preventDefault();
       this.toggleZenMode();
     }
-  }
-
-  onLessonCompleted(_lessonId: string): void {
-    // Handled inside ExplainPanelComponent
   }
 
   navigateHome(): void {

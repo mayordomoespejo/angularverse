@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -619,6 +620,11 @@ import type { UserLevel } from '../../core/models/user-profile.model';
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .particle { animation: none; opacity: 0; }
+      .nebula { animation: none; }
+    }
+
     @media (max-width: 480px) {
       .profile-shell {
         align-items: flex-start;
@@ -681,7 +687,8 @@ export class ProfileComponent {
   readonly deleteError = signal('');
   readonly selectedLevel = signal(this.progressService.userLevel());
 
-  readonly particles = this.generateParticles();
+  readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  readonly particles = this.reducedMotion ? [] : this.generateParticles();
 
   newName = this.currentName();
 
@@ -732,7 +739,7 @@ export class ProfileComponent {
     this.selectedLevel.set(level);
     this.progressService.updateLevel(level);
     this.levelSuccess.set(true);
-    setTimeout(() => this.levelSuccess.set(false), 2500);
+    timer(2500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.levelSuccess.set(false));
   }
 
   // ── Username ──────────────────────────────────────────────────────────
@@ -747,7 +754,7 @@ export class ProfileComponent {
         this.progressService.updateUserName(name);
         this.nameSuccess.set(true);
         this.nameSaving.set(false);
-        setTimeout(() => this.nameSuccess.set(false), 2500);
+        timer(2500).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.nameSuccess.set(false));
       },
       error: () => this.nameSaving.set(false),
     });

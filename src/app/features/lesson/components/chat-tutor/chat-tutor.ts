@@ -556,8 +556,8 @@ export class ChatTutorComponent {
   readonly isStreaming = signal(false);
   readonly streamingContent = signal('');
 
-  readonly userName = computed(() => this.progressService.userName());
-  readonly userInitial = computed(() => this.userName().charAt(0).toUpperCase() || 'U');
+  readonly userName = this.progressService.userName;
+  readonly userInitial = computed(() => this.progressService.userName().charAt(0).toUpperCase() || 'U');
   readonly userPhoto = this.progressService.photoUrl;
   readonly lessonTitle = computed(() => this.lesson()?.title ?? 'Angular');
   readonly suggestedQuestions = computed(() => this.lesson()?.suggestedQuestions?.slice(0, 3) ?? []);
@@ -591,7 +591,7 @@ export class ChatTutorComponent {
     // Scroll to bottom when chat is reopened
     effect(() => {
       if (this.isOpen()) {
-        setTimeout(() => this.scrollToBottom(), 0);
+        queueMicrotask(() => this.scrollToBottom());
       }
     });
 
@@ -628,7 +628,7 @@ export class ChatTutorComponent {
     this.messages.update(msgs => [...msgs, userMsg]);
     this.isStreaming.set(true);
     this.streamingContent.set('');
-    setTimeout(() => this.scrollToBottom(), 0);
+    queueMicrotask(() => this.scrollToBottom());
 
     const assistantId = crypto.randomUUID();
     let accumulatedContent = '';
@@ -673,7 +673,7 @@ export class ChatTutorComponent {
           }
         });
 
-        setTimeout(() => this.scrollToBottom(), 0);
+        queueMicrotask(() => this.scrollToBottom());
       },
       error: (err: unknown) => {
         const errorMsg = err instanceof Error ? err.message : 'Error de conexión con Ngbot';
@@ -688,7 +688,7 @@ export class ChatTutorComponent {
           },
         ]);
         this.isStreaming.set(false);
-        setTimeout(() => this.scrollToBottom(), 0);
+        queueMicrotask(() => this.scrollToBottom());
       },
       complete: () => {
         this.messages.update(msgs =>
@@ -698,7 +698,7 @@ export class ChatTutorComponent {
         );
         this.isStreaming.set(false);
         this.streamingContent.set('');
-        setTimeout(() => this.scrollToBottom(), 0);
+        queueMicrotask(() => this.scrollToBottom());
 
         if (lesson) {
           this.progressService.saveChatHistory(lesson.id, this.messages());

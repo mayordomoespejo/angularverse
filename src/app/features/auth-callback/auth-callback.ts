@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+
+const AUTH_READY_DELAY_MS = 500;
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
@@ -155,6 +157,6 @@ export class AuthCallbackComponent implements OnInit {
       } else {
         void this.router.navigate(['/welcome'], { queryParams: { step: 'profile' } });
       }
-    }, 500);
+    }, AUTH_READY_DELAY_MS);
   }
 }

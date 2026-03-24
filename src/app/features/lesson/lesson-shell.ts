@@ -117,7 +117,6 @@ import type { Lesson } from '../../core/models/lesson.model';
       <div class="panels-grid" [class.chat-open]="isChatOpen()" [attr.data-mobile-panel]="activeMobilePanel()">
         <app-explain-panel
           [lesson]="lesson()"
-          (lessonCompleted)="onLessonCompleted($event)"
         />
         <app-code-panel
           [lesson]="lesson()"
@@ -434,10 +433,6 @@ export class LessonShellComponent {
       event.preventDefault();
       this.toggleZenMode();
     }
-  }
-
-  onLessonCompleted(_lessonId: string): void {
-    // Handled inside ExplainPanelComponent
   }
 
   navigateHome(): void {

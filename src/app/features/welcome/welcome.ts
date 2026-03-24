@@ -636,6 +636,18 @@ type Act3Step = 'email' | 'otp' | 'profile';
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .particle { animation: none; opacity: 0; }
+      .nebula { animation: none; }
+      .angular-logo-nebula { animation: none; }
+      .brand-ngbot-icon { animation: none; }
+      .logo-svg .hex-path { animation: none; stroke-dashoffset: 0; }
+      .cursor { animation: none; opacity: 1; }
+      .btn-skip { animation: none; }
+      .btn-start.ready { animation: none; }
+      .act { animation: none; opacity: 1; }
+    }
+
     .otp-boxes {
       display: flex;
       gap: 0.5rem;
@@ -718,7 +730,8 @@ export class WelcomeComponent {
   readonly typedText = signal('');
   readonly isReady = computed(() => this.userName().trim().length >= 2);
 
-  readonly particles = this.generateParticles();
+  readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  readonly particles = this.reducedMotion ? [] : this.generateParticles();
 
   private typewriterInterval?: ReturnType<typeof setInterval>;
   private cooldownInterval?: ReturnType<typeof setInterval>;

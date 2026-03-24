@@ -91,7 +91,7 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
                         [class.correct]="checkpointSelected() === $index && $index === block.correct"
                         [class.wrong]="checkpointSelected() === $index && $index !== block.correct"
                         [class.disabled]="checkpointSelected() !== null"
-                        (click)="selectCheckpoint($index, block.correct)"
+                        (click)="selectCheckpoint($index)"
                       >
                         <span class="option-letter">{{ optionLetters[$index] }}</span>
                         <span>{{ option }}</span>
@@ -575,7 +575,7 @@ export class ExplainPanelComponent {
     return l ? this.progressService.isLessonCompleted(l.id) : false;
   });
 
-  selectCheckpoint(index: number, _correct: number): void {
+  selectCheckpoint(index: number): void {
     if (this.checkpointSelected() !== null) return;
     this.checkpointSelected.set(index);
   }

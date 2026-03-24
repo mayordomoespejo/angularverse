@@ -19,7 +19,7 @@ export const LEVELS: Array<{ id: UserLevel; name: string; icon: string; descript
           (click)="levelChange.emit(level.id)"
           type="button"
         >
-          <span class="level-icon">{{ level.icon }}</span>
+          <span class="level-icon" aria-hidden="true">{{ level.icon }}</span>
           <span class="level-name">{{ level.name }}</span>
           <span class="level-desc">{{ level.description }}</span>
         </button>

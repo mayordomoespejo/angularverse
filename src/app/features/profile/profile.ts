@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -76,17 +78,17 @@ import type { UserLevel } from '../../core/models/user-profile.model';
           <h2 class="section-title">Tu progreso</h2>
           <div class="stats-grid">
             <div class="stat">
-              <span class="stat-emoji">⚡</span>
+              <span class="stat-emoji" aria-hidden="true">⚡</span>
               <span class="stat-value xp-value">{{ xp() }}</span>
               <span class="stat-label">XP total</span>
             </div>
             <div class="stat">
-              <span class="stat-emoji">📚</span>
+              <span class="stat-emoji" aria-hidden="true">📚</span>
               <span class="stat-value">{{ completed() }}</span>
               <span class="stat-label">Lecciones</span>
             </div>
             <div class="stat">
-              <span class="stat-emoji">🔥</span>
+              <span class="stat-emoji" aria-hidden="true">🔥</span>
               <span class="stat-value">{{ streak() }}</span>
               <span class="stat-label">Días seguidos</span>
             </div>
@@ -659,6 +661,7 @@ export class ProfileComponent {
   private readonly authService = inject(AuthService);
   private readonly progressService = inject(LessonProgressService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly photoUrl = this.progressService.photoUrl;
   readonly currentName = this.progressService.userName;
@@ -739,7 +742,7 @@ export class ProfileComponent {
     if (!name || name === this.currentName()) return;
 
     this.nameSaving.set(true);
-    this.authService.updateDisplayName(name).subscribe({
+    this.authService.updateDisplayName(name).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.progressService.updateUserName(name);
         this.nameSuccess.set(true);
@@ -753,7 +756,7 @@ export class ProfileComponent {
   // ── Logout ────────────────────────────────────────────────────────────
 
   logout(): void {
-    this.authService.logout().subscribe({
+    this.authService.logout().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.progressService.resetProfile();
         void this.router.navigate(['/welcome']);
@@ -767,7 +770,7 @@ export class ProfileComponent {
     this.deleteLoading.set(true);
     this.deleteError.set('');
 
-    this.authService.deleteAccount().subscribe({
+    this.authService.deleteAccount().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.progressService.resetProfile();
         void this.router.navigate(['/welcome']);

@@ -16,6 +16,9 @@ import { LevelSelectorComponent } from '../../shared/components/level-selector/l
 import { LogoIconComponent } from '../../shared/components/logo-icon/logo-icon';
 import type { UserLevel } from '../../core/models/user-profile.model';
 
+const FIRST_LESSON_ID = 'L0.1';
+const INTRO_LESSON_ID = 'L1.1';
+
 type Act = 0 | 1 | 2 | 3;
 type Act3Step = 'email' | 'otp' | 'profile';
 
@@ -59,9 +62,9 @@ type Act3Step = 'email' | 'otp' | 'profile';
               </h1>
               <p class="brand-subtitle">Aprende Angular de verdad.<br>Con código en contexto. Con un tutor que te entiende.</p>
               <div class="feature-pills">
-                <span class="pill">🤖 AI Tutor Ngbot</span>
-                <span class="pill">🚀 De cero a producción</span>
-                <span class="pill">🏆 Sistema de XP</span>
+                <span class="pill"><span aria-hidden="true">🤖</span> AI Tutor Ngbot</span>
+                <span class="pill"><span aria-hidden="true">🚀</span> De cero a producción</span>
+                <span class="pill"><span aria-hidden="true">🏆</span> Sistema de XP</span>
               </div>
             </div>
             <button class="btn-skip" (click)="goToAct3()">Comenzar →</button>
@@ -900,20 +903,20 @@ export class WelcomeComponent {
   submit(): void {
     if (!this.isReady()) return;
     this.lessonProgress.initUser(this.userName().trim(), this.selectedLevel());
-    void this.router.navigate(['/lesson', 'L0.1']);
+    void this.router.navigate(['/lesson', FIRST_LESSON_ID]);
   }
 
   skipToAdvanced(): void {
     const name = this.userName().trim() || 'Desarrollador';
     this.lessonProgress.initUser(name, 'developer');
-    void this.router.navigate(['/lesson', 'L1.1']);
+    void this.router.navigate(['/lesson', INTRO_LESSON_ID]);
   }
 
   // ── Utils ────────────────────────────────────────────────────────────────
 
   private navigateToLesson(): void {
     const currentId = this.lessonProgress.currentLessonId();
-    void this.router.navigate(['/lesson', currentId ?? 'L0.1']);
+    void this.router.navigate(['/lesson', currentId ?? FIRST_LESSON_ID]);
   }
 
   private prefillName(): void {

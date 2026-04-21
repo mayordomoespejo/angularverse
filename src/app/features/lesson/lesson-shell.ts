@@ -392,7 +392,7 @@ export class LessonShellComponent {
     this.progressService.userName().charAt(0).toUpperCase() || 'U'
   );
 
-  readonly id = input<string>(''); // debe coincidir con el param :id de la ruta
+  readonly id = input<string>('L0.1'); // debe coincidir con el param :id de la ruta
 
   readonly lesson = computed((): Lesson | null => {
     const lessonId = this.id();

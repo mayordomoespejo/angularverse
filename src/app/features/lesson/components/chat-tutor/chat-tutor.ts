@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AiTutorService } from '../../../../core/services/ai-tutor.service';
 import { LessonProgressService } from '../../../../core/services/lesson-progress.service';
 import type { ChatMessage } from '../../../../core/models/chat-message.model';
@@ -595,9 +596,6 @@ export class ChatTutorComponent {
       }
     });
 
-    this.destroyRef.onDestroy(() => {
-      this.streamSub?.unsubscribe();
-    });
   }
 
   prefillInput(text: string): void {
@@ -646,7 +644,9 @@ export class ChatTutorComponent {
     };
 
     this.streamSub?.unsubscribe();
-    this.streamSub = this.aiTutor.streamResponse(userContent, context).subscribe({
+    this.streamSub = this.aiTutor.streamResponse(userContent, context).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
       next: (token: string) => {
         accumulatedContent += token;
         this.streamingContent.set(accumulatedContent);

@@ -29,6 +29,7 @@ import { DomSanitizer } from '@angular/platform-browser';
             </div>
           }
           <iframe
+            sandbox="allow-scripts"
             [srcdoc]="safeHtml()"
             class="preview-iframe"
             width="100%"

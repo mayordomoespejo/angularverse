@@ -6,8 +6,8 @@ import { ALL_LESSONS } from '../../data/lessons';
 import type { Lesson } from '../models/lesson.model';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
-
-const STORAGE_KEY = 'angularverse_state';
+import { LoggerService } from './logger.service';
+import { STORAGE_KEYS } from '../constants/storage-keys';
 
 function createDefaultProfile(): UserProfile {
   return {
@@ -29,6 +29,7 @@ export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
   private readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
 
   private get userId(): string {
     return this.auth.currentUser?.id ?? '';
@@ -55,7 +56,7 @@ export class LessonProgressService {
     effect(() => {
       const profile = this._profile();
       if (profile) {
-        this.writeToStorage(STORAGE_KEY, profile);
+        this.writeToStorage(STORAGE_KEYS.LESSON_PROGRESS, profile);
       }
     });
 
@@ -89,7 +90,7 @@ export class LessonProgressService {
   }
 
   private loadFromStorage(): UserProfile | null {
-    return this.readFromStorage<UserProfile | null>(STORAGE_KEY, null);
+    return this.readFromStorage<UserProfile | null>(STORAGE_KEYS.LESSON_PROGRESS, null);
   }
 
   // ── Supabase sync ────────────────────────────────────────────
@@ -323,7 +324,7 @@ export class LessonProgressService {
   }
 
   resetProfile(): void {
-    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+    try { localStorage.removeItem(STORAGE_KEYS.LESSON_PROGRESS); } catch { /* ignore */ }
     this._profile.set(null);
   }
 }

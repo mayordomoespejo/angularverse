@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-
-const AUTH_READY_DELAY_MS = 500;
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
@@ -136,9 +134,8 @@ export class AuthCallbackComponent implements OnInit {
   private readonly progress = inject(LessonProgressService);
   private readonly supabase = inject(SupabaseService);
 
-  ngOnInit(): void {
-    // Give Supabase a moment to exchange the OAuth code for a session
-    setTimeout(async () => {
+  async ngOnInit(): Promise<void> {
+    try {
       const session = await this.auth.authReady();
       if (!session) {
         void this.router.navigate(['/welcome']);
@@ -157,6 +154,9 @@ export class AuthCallbackComponent implements OnInit {
       } else {
         void this.router.navigate(['/welcome'], { queryParams: { step: 'profile' } });
       }
-    }, AUTH_READY_DELAY_MS);
+    } catch (err) {
+      console.error('[auth-callback] Session error:', err);
+      void this.router.navigate(['/welcome']);
+    }
   }
 }

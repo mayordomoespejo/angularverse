@@ -11,8 +11,8 @@ export class AuthService {
   private readonly logger = inject(LoggerService);
   private readonly _session$ = new BehaviorSubject<Session | null>(null);
 
-  readonly session$ = this._session$.asObservable();
-  readonly user$ = this._session$.pipe(map(s => s?.user ?? null));
+  readonly session$: Observable<Session | null> = this._session$.asObservable();
+  readonly user$: Observable<User | null> = this._session$.pipe(map(s => s?.user ?? null));
 
   constructor() {
     // Hydrate from persisted session immediately

@@ -22,3 +22,19 @@ export interface UserProfile {
 }
 
 export type PersistedState = UserProfile;
+
+export function createDefaultUserProfile(): UserProfile {
+  return {
+    userId: '',
+    userName: '',
+    level: 'beginner',
+    completedLessons: [],
+    xpTotal: 0,
+    currentLessonId: 'L0.1',
+    chatHistoryByLesson: {},
+    streak: { lastActiveDate: new Date().toISOString().split('T')[0], count: 0 },
+    badges: [],
+    createdAt: new Date().toISOString(),
+    photoUrl: undefined,
+  };
+}

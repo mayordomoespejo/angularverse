@@ -8,7 +8,14 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   },
   template: `
     <div class="ngbot-avatar" [class.large]="size() === 'lg'" [class.small]="size() === 'sm'">
-      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="avatar-svg">
+      <svg
+        viewBox="0 0 60 60"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="avatar-svg"
+        role="img"
+        [attr.aria-label]="'NG Bot' + (showStatus() ? ' - online' : '')"
+      >
         <!-- Hexagon background -->
         <polygon
           points="30,2 54,16 54,44 30,58 6,44 6,16"

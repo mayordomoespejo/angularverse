@@ -17,11 +17,18 @@ export type NodeStatus = 'completed' | 'current' | 'locked';
     <div
       #nodeEl
       class="progress-node"
+      role="button"
+      tabindex="0"
       [class.completed]="status() === 'completed'"
       [class.current]="status() === 'current'"
       [class.locked]="status() === 'locked'"
+      [attr.aria-label]="'Lesson ' + lesson().title + ' - ' + status()"
+      [attr.aria-disabled]="status() === 'locked'"
+      [attr.aria-current]="status() === 'current' ? 'step' : null"
       (mouseenter)="showTooltip()"
       (mouseleave)="hideTooltip()"
+      (keydown.enter)="showTooltip()"
+      (keydown.space)="showTooltip()"
     >
       <div class="node-circle">
         @if (status() === 'completed') {

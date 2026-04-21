@@ -386,6 +386,7 @@ export class WelcomeAuthComponent {
   }
 
   submitOtp(): void {
+    if (this.otpCode().length < 6 || this.otpDigits().includes('')) return;
     this.authError.set('');
     this.authLoading.set(true);
     this.authService.verifyOtp(this.email(), this.otpCode()).pipe(take(1)).subscribe({
@@ -410,8 +411,9 @@ export class WelcomeAuthComponent {
     digits[index] = digit;
     this.otpDigits.set(digits);
     if (digit && index < 5) {
-      const next = input.parentElement?.children[index + 1] as HTMLInputElement;
-      next?.focus();
+      const next = input.parentElement?.children.item(index + 1) as HTMLInputElement | null;
+      if (!next) return;
+      next.focus();
     }
   }
 

@@ -156,6 +156,7 @@ export class ProgressNodeComponent {
   readonly tooltipY = signal(0);
 
   showTooltip(): void {
+    if (this.tooltipVisible()) return; // already showing
     const rect = this.nodeEl()?.nativeElement.getBoundingClientRect();
     if (!rect) return;
     const estimatedWidth = 180;

@@ -2,14 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, from, map } from 'rxjs';
 import type { Session, User } from '@supabase/supabase-js';
 import { SupabaseService } from './supabase.service';
+import { STORAGE_KEYS } from '../constants/storage-keys';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly supabase = inject(SupabaseService);
   private readonly _session$ = new BehaviorSubject<Session | null>(null);
 
-  readonly session$ = this._session$.asObservable();
-  readonly user$ = this._session$.pipe(map(s => s?.user ?? null));
+  readonly session$: Observable<Session | null> = this._session$.asObservable();
+  readonly user$: Observable<User | null> = this._session$.pipe(map(s => s?.user ?? null));
 
   constructor() {
     // Hydrate from persisted session immediately
@@ -98,7 +99,7 @@ export class AuthService {
         .then(({ error }) => { if (error) throw error; })
         .then(async () => {
           await this.supabase.client.auth.signOut();
-          localStorage.removeItem('angularverse_state');
+          localStorage.removeItem(STORAGE_KEYS.LESSON_PROGRESS);
           this._session$.next(null);
         })
     );

@@ -37,10 +37,10 @@ import { LessonProgressService } from '../../../../core/services/lesson-progress
         </div>
 
         <div class="narrative-content">
-          @for (block of lesson()!.narrative; track block.type + $index) {
+          @for (block of renderedNarrative(); track block.type + $index) {
             @switch (block.type) {
               @case ('text') {
-                <p class="narrative-text" [innerHTML]="renderText(block.content)"></p>
+                <p class="narrative-text" [innerHTML]="block.rendered"></p>
               }
               @case ('tip') {
                 <div class="tip-block" [attr.data-variant]="block.variant">
@@ -573,16 +573,22 @@ export class ExplainPanelComponent {
     return l ? this.progressService.isLessonCompleted(l.id) : false;
   });
 
+  readonly renderedNarrative = computed(() => {
+    const narrative = this.lesson()?.narrative ?? [];
+    return narrative.map(block => {
+      if (block.type === 'text') {
+        const html = block.content
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/`(.+?)`/g, '<code>$1</code>');
+        return { ...block, rendered: this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '' };
+      }
+      return { ...block, rendered: '' };
+    });
+  });
+
   selectCheckpoint(index: number): void {
     if (this.checkpointSelected() !== null) return;
     this.checkpointSelected.set(index);
-  }
-
-  renderText(content: string): string {
-    const html = content
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`(.+?)`/g, '<code>$1</code>');
-    return this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '';
   }
 
   completeLesson(): void {

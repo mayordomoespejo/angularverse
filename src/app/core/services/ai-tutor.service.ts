@@ -4,6 +4,9 @@ import { environment } from '../../../environments/environment';
 import type { ChatMessage } from '../models/chat-message.model';
 import type { UserLevel } from '../models/user-profile.model';
 
+// TODO: Replace direct Groq API call with Supabase Edge Function proxy
+// Edge Function at supabase/functions/groq-proxy/index.ts
+// Once deployed: use `${environment.supabaseUrl}/functions/v1/groq-proxy`
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const MODELS = [

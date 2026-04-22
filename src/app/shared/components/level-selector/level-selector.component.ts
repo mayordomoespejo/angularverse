@@ -15,9 +15,11 @@ export const LEVELS: Array<{ id: UserLevel; name: string; icon: string; descript
       @for (level of levels; track level.id) {
         <button
           class="level-card"
-          [class.selected]="selected() === level.id"
-          (click)="levelChange.emit(level.id)"
           type="button"
+          [class.selected]="selected() === level.id"
+          [attr.aria-label]="level.name + ' - ' + level.description"
+          [attr.aria-pressed]="selected() === level.id"
+          (click)="levelChange.emit(level.id)"
         >
           <span class="level-icon" aria-hidden="true">{{ level.icon }}</span>
           <span class="level-name">{{ level.name }}</span>

@@ -2,6 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             script-src 'self' 'unsafe-inline' 'unsafe-eval';
+             style-src 'self' 'unsafe-inline';
+             img-src 'self' https: data: blob:;
+             font-src 'self' data:;
+             connect-src 'self' https:;
+             frame-src 'self' blob: data:;">
   <title>AngularVerse — Aprende Angular de verdad</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">

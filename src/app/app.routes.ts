@@ -11,7 +11,7 @@ export const routes: Routes = [
   {
     path: 'welcome',
     loadComponent: () =>
-      import('./features/welcome/welcome').then(m => m.WelcomeComponent),
+      import('./features/welcome/welcome-shell').then(m => m.WelcomeShellComponent),
   },
   {
     path: 'profile',

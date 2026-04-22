@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -23,12 +23,20 @@ import { DomSanitizer } from '@angular/platform-browser';
 
       <div class="preview-content" [class.has-preview]="previewHtml()">
         @if (previewHtml()) {
+          @if (iframeLoading()) {
+            <div class="preview-skeleton">
+              <div class="skeleton-shimmer"></div>
+            </div>
+          }
           <iframe
+            sandbox="allow-scripts"
             [srcdoc]="safeHtml()"
             class="preview-iframe"
             width="100%"
             height="100%"
             frameborder="0"
+            (load)="onIframeLoad()"
+            (error)="onIframeError()"
           ></iframe>
         } @else {
           <div class="idle-state">
@@ -106,6 +114,7 @@ import { DomSanitizer } from '@angular/platform-browser';
       justify-content: center;
       padding: 1.5rem;
       overflow: hidden;
+      position: relative;
 
       &.has-preview {
         padding: 0;
@@ -181,6 +190,26 @@ import { DomSanitizer } from '@angular/platform-browser';
       font-size: 0.6875rem;
       color: var(--text-muted);
     }
+
+    .preview-skeleton {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-secondary, #1e1e2e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md, 8px);
+      z-index: 1;
+    }
+
+    .skeleton-shimmer {
+      width: 60%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--bg-surface, #2a2a3e) 25%, var(--accent-primary, #7c3aed) 50%, var(--bg-surface, #2a2a3e) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 2px;
+    }
   `],
 })
 export class PreviewPanelComponent {
@@ -192,4 +221,23 @@ export class PreviewPanelComponent {
   readonly safeHtml = computed(() =>
     this.sanitizer.bypassSecurityTrustHtml(this.previewHtml())
   );
+
+  readonly #iframeLoading = signal(true);
+  readonly iframeLoading = this.#iframeLoading.asReadonly();
+
+  constructor() {
+    effect(() => {
+      if (this.previewHtml()) {
+        this.#iframeLoading.set(true);
+      }
+    });
+  }
+
+  onIframeLoad(): void {
+    this.#iframeLoading.set(false);
+  }
+
+  onIframeError(): void {
+    this.#iframeLoading.set(false);
+  }
 }

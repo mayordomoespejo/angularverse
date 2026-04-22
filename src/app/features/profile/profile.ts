@@ -46,7 +46,7 @@ const SUCCESS_MESSAGE_DISPLAY_MS = 2500;
         <div class="avatar-section">
           <div class="avatar-wrapper">
             @if (photoUrl()) {
-              <img class="avatar-img" [src]="photoUrl()" alt="Foto de perfil" />
+              <img class="avatar-img" [src]="photoUrl()" alt="Foto de perfil" loading="lazy" width="88" height="88" />
             } @else {
               <div class="avatar-placeholder">{{ initial() }}</div>
             }

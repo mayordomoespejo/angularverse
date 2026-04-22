@@ -6,8 +6,8 @@ import { ALL_LESSONS } from '../../data/lessons';
 import type { Lesson } from '../models/lesson.model';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
-
-const STORAGE_KEY = 'angularverse_state';
+import { LoggerService } from './logger.service';
+import { STORAGE_KEYS } from '../constants/storage-keys';
 
 function createDefaultProfile(): UserProfile {
   return {
@@ -29,6 +29,7 @@ export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
   private readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
 
   private get userId(): string {
     return this.auth.currentUser?.id ?? '';
@@ -55,7 +56,7 @@ export class LessonProgressService {
     effect(() => {
       const profile = this._profile();
       if (profile) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        this.writeToStorage(STORAGE_KEYS.LESSON_PROGRESS, profile);
       }
     });
 
@@ -71,14 +72,25 @@ export class LessonProgressService {
 
   // ── Storage helpers ─────────────────────────────────────────
 
-  private loadFromStorage(): UserProfile | null {
+  private readFromStorage<T>(key: string, fallback: T): T {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return null;
-      return JSON.parse(stored) as UserProfile;
+      const raw = localStorage.getItem(key);
+      return raw !== null ? (JSON.parse(raw) as T) : fallback;
     } catch {
-      return null;
+      return fallback;
     }
+  }
+
+  private writeToStorage(key: string, value: unknown): void {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // private browsing or storage full — fail silently
+    }
+  }
+
+  private loadFromStorage(): UserProfile | null {
+    return this.readFromStorage<UserProfile | null>(STORAGE_KEYS.LESSON_PROGRESS, null);
   }
 
   // ── Supabase sync ────────────────────────────────────────────
@@ -129,8 +141,8 @@ export class LessonProgressService {
 
       // Also hydrate chat history from Supabase
       await this.hydrateChatHistoryFromSupabase(uid, merged);
-    } catch {
-      return;
+    } catch (err) {
+      this.logger.warn('lesson-progress', 'hydrateFromSupabase failed — using local state', { err });
     }
   }
 
@@ -149,8 +161,8 @@ export class LessonProgressService {
       }
 
       this._profile.set({ ...profile, chatHistoryByLesson });
-    } catch {
-      return;
+    } catch (err) {
+      this.logger.warn('lesson-progress', 'hydrateChatHistory failed — chat history may be incomplete', { err });
     }
   }
 
@@ -312,7 +324,7 @@ export class LessonProgressService {
   }
 
   resetProfile(): void {
-    localStorage.removeItem(STORAGE_KEY);
+    try { localStorage.removeItem(STORAGE_KEYS.LESSON_PROGRESS); } catch { /* ignore */ }
     this._profile.set(null);
   }
 }

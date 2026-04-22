@@ -62,9 +62,9 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.35);
   --shadow-glow: 0 0 20px var(--glow), 0 0 40px var(--glow);
   --shadow-glow-angular: 0 0 20px var(--glow-angular);
 
@@ -76,6 +76,11 @@
   // Opacity scale
   --opacity-disabled: 0.5;
   --opacity-hover: 0.85;
+
+  // Font family tokens
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Courier New', 'Courier', monospace;
+  --font-serif: Georgia, 'Times New Roman', serif;
 
   // Letter spacing scale
   --letter-tight: 0.03em;

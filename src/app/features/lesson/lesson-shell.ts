@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { LessonProgressService } from '../../core/services/lesson-progress.service';
+import { ROUTES } from '../../core/constants/routes';
 import { LessonTimelineComponent } from '../timeline/lesson-timeline';
 import { ExplainPanelComponent } from './components/explain-panel/explain-panel';
 import { CodePanelComponent } from './components/code-panel/code-panel';
@@ -391,7 +392,7 @@ export class LessonShellComponent {
     this.progressService.userName().charAt(0).toUpperCase() || 'U'
   );
 
-  readonly id = input<string>(''); // debe coincidir con el param :id de la ruta
+  readonly id = input<string>('L0.1'); // debe coincidir con el param :id de la ruta
 
   readonly lesson = computed((): Lesson | null => {
     const lessonId = this.id();
@@ -436,10 +437,10 @@ export class LessonShellComponent {
   }
 
   navigateHome(): void {
-    void this.router.navigate(['/welcome']);
+    void this.router.navigate([ROUTES.WELCOME]);
   }
 
   navigateToProfile(): void {
-    void this.router.navigate(['/profile']);
+    void this.router.navigate([ROUTES.PROFILE]);
   }
 }

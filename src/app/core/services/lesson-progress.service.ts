@@ -6,6 +6,7 @@ import { ALL_LESSONS } from '../../data/lessons';
 import type { Lesson } from '../models/lesson.model';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
+import { LoggerService } from './logger.service';
 import { STORAGE_KEYS } from '../constants/storage-keys';
 
 function createDefaultProfile(): UserProfile {
@@ -28,6 +29,7 @@ export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
   private readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
 
   private get userId(): string {
     return this.auth.currentUser?.id ?? '';
@@ -139,8 +141,8 @@ export class LessonProgressService {
 
       // Also hydrate chat history from Supabase
       await this.hydrateChatHistoryFromSupabase(uid, merged);
-    } catch {
-      return;
+    } catch (err) {
+      this.logger.warn('lesson-progress', 'hydrateFromSupabase failed — using local state', { err });
     }
   }
 
@@ -159,8 +161,8 @@ export class LessonProgressService {
       }
 
       this._profile.set({ ...profile, chatHistoryByLesson });
-    } catch {
-      return;
+    } catch (err) {
+      this.logger.warn('lesson-progress', 'hydrateChatHistory failed — chat history may be incomplete', { err });
     }
   }
 

@@ -6,7 +6,6 @@ import { ALL_LESSONS } from '../../data/lessons';
 import type { Lesson } from '../models/lesson.model';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
-import { LoggerService } from './logger.service';
 import { STORAGE_KEYS } from '../constants/storage-keys';
 
 function createDefaultProfile(): UserProfile {
@@ -29,7 +28,6 @@ export class LessonProgressService {
   private readonly supabase = inject(SupabaseService);
   private readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly logger = inject(LoggerService);
 
   private get userId(): string {
     return this.auth.currentUser?.id ?? '';
@@ -75,7 +73,7 @@ export class LessonProgressService {
   private readFromStorage<T>(key: string, fallback: T): T {
     try {
       const raw = localStorage.getItem(key);
-      return raw ? (JSON.parse(raw) as T) : fallback;
+      return raw !== null ? (JSON.parse(raw) as T) : fallback;
     } catch {
       return fallback;
     }

@@ -386,7 +386,10 @@ export class WelcomeAuthComponent {
   }
 
   submitOtp(): void {
-    if (this.otpCode().length < 6 || this.otpDigits().includes('')) return;
+    if (this.otpCode().length < 6 || this.otpDigits().includes('')) {
+      this.authError.set('Ingresa los 6 dígitos del código.');
+      return;
+    }
     this.authError.set('');
     this.authLoading.set(true);
     this.authService.verifyOtp(this.email(), this.otpCode()).pipe(take(1)).subscribe({
